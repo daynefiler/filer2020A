@@ -1,0 +1,211 @@
+configfile: "config.yaml"
+
+sampleRuns = dict()
+fastqs = []
+flagstats = []
+alignstats = []
+calls = []
+deps = []
+cnvpytor = []
+erds = []
+combine = []
+for (s,r,f) in zip(*glob_wildcards('inputs/{sample}/{runId}/{fastqBase}.fastq.gz')):
+    sampleRuns.setdefault(s, {}).setdefault(r, []).append(f)
+    fastqs.append('fastqc/%s/%s/%s_fastqc.zip'%(s,r,f))
+    flagstats.append('sorted/%s.sorted.markdup.bam.flagstat'%(s))
+    alignstats.append('sorted/%s.sorted.markdup.bam.alignMetrics'%(s))
+    calls.append('calls/%s.g.vcf'%(s))
+    deps.append('depths/%s.depth.quantile'%(s))
+    cnvpytor.append('cnvpytor/%s.pytor.calls'%(s))
+    erds.append('erds/%s/%s.events'%(s,s))
+    combine.append('combined/%s.cnvcalls'%(s))
+    
+rule all:
+    input:
+        fastqs,
+        flagstats,
+        alignstats,
+        calls,
+        deps,
+        cnvpytor,
+        erds,
+        combine,
+
+rule fastqc:
+    input:
+        "inputs/{sample}/{runId}/{stem}.fastq.gz"
+    output:
+        html="fastqc/{sample}/{runId}/{stem}.html",
+        zip="fastqc/{sample}/{runId}/{stem}_fastqc.zip"
+    params: ""
+    wrapper:
+        "0.49.0/bio/fastqc"
+
+rule bwamem:
+    input:
+        reads=lambda wildcards: 
+            expand('inputs/{sample}/{runId}/{stem}.fastq.gz',
+                   sample=wildcards.sample,
+                   runId=wildcards.runId,
+                   stem=sampleRuns[wildcards.sample][wildcards.runId])
+    output:
+        temp("mapped/{sample}.{runId}.bam")
+    log:
+        "logs/bwa_mem/{sample}.{runId}.log"
+    params:
+        index=config['bwa_index'],
+        extra=r"-R '@RG\tID:{sample}_{runId}\tSM:{sample}\tPL:Illumina\tCN:UNC'",
+        sort="picard",
+        sort_order="queryname",
+        sort_extra='TMP_DIR="%s"'%config['temp_dir']
+    threads: 8
+    wrapper:
+        "0.49.0/bio/bwa/mem"
+
+rule merge:
+    input: lambda wildcards: 
+            expand('mapped/{sample}.{runId}.bam',
+                   sample=wildcards.sample,
+                   runId=sampleRuns[wildcards.sample])
+    output: temp("merged/{sample}.bam")
+    params: "-n"
+    threads: 8
+    wrapper:
+        "0.49.0/bio/samtools/merge"
+
+rule markdup:
+    input:
+        "merged/{sample}.bam"
+    output:
+        bam = temp("markdup/{sample}.markdup.bam"),
+        metrics = "markdup/{sample}.markdup.markdupMetrics"
+    log:
+        "logs/picard/markdup/{sample}.log"
+    params:
+        "REMOVE_DUPLICATES=false",
+        "ASSUME_SORT_ORDER=queryname",
+        "CREATE_INDEX=false",
+        'TMP_DIR="%s"'%config['temp_dir']
+    wrapper:
+        "0.49.0/bio/picard/markduplicates"
+
+rule sort:
+    input: "markdup/{sample}.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam"
+    params: "-m 2G"
+    threads: 8
+    wrapper:
+        "0.49.0/bio/samtools/sort"
+
+rule index:
+    input: "sorted/{sample}.sorted.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam.bai"
+    wrapper:
+        "0.49.0/bio/samtools/index"
+
+rule stats:
+    input:
+        bam = "sorted/{sample}.sorted.markdup.bam",
+        ref = config['bwa_index'],
+	idx = "sorted/{sample}.sorted.markdup.bam.bai"
+    output:
+        "sorted/{sample}.sorted.markdup.bam.alignMetrics"
+    log:
+        "logs/picard/collectalignmentsummarymetrics/{sample}.log"
+    wrapper:
+        "0.49.0/bio/picard/collectalignmentsummarymetrics"
+
+rule samtools_depth:
+    input:
+        bams="sorted/{sample}.sorted.markdup.bam",
+    output: "depths/{sample}.depth"
+    params:
+        # optional bed file passed to -b
+        extra="" # optional additional parameters as string
+    wrapper:
+        "0.60.0/bio/samtools/depth"
+
+rule depthQuantile:
+    input: "depths/{sample}.depth"
+    output: "depths/{sample}.depth.quantile"
+    conda: "envs/R.yaml"
+    shell: "{config[depthQuantile]} {input} {output}"
+
+rule samtools_flagstat:
+    input: "sorted/{sample}.sorted.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam.flagstat"
+    wrapper:
+        "0.49.0/bio/samtools/flagstat"
+
+rule gatkBqsr:
+    input:
+        bam = "sorted/{sample}.sorted.markdup.bam",
+        ref = config['bwa_index'],
+        known = config['dbsnp']
+    output:
+        bam = "recal/{sample}.recal.bam"
+    log:
+        "logs/gatk/bqsr/{sample}.log"
+    params:
+        extra = "",  # optional
+        java_opts = "-Xmx20G -XX:ParallelGCThreads=8", # optional
+    threads: 8
+    wrapper:
+        "0.49.0/bio/gatk/baserecalibrator"
+
+rule haplotypeCaller:
+    input:
+        # single or list of bam files
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index']
+    output:
+        gvcf = "calls/{sample}.g.vcf",
+    log:
+        "logs/gatk/haplotypecaller/{sample}.log"
+    params:
+        extra = "",  # optional
+        java_opts = "-Xmx20G -XX:ParallelGCThreads=8", # optional
+    threads: 8
+    wrapper:
+        "0.49.0/bio/gatk/haplotypecaller"
+
+rule cnvpytor:
+    input:
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index']
+    output:
+        pytor = "cnvpytor/{sample}.pytor",
+        calls = "cnvpytor/{sample}.pytor.calls"
+    params:
+        binsize = 500
+    shell:
+        """
+        cnvpytor -root {output.pytor} -rd {input.bam} -T {input.ref}
+        cnvpytor -root {output.pytor} -his {params.binsize}
+        cnvpytor -root {output.pytor} -partition {params.binsize}
+        cnvpytor -root {output.pytor} -call {params.binsize} > {output.calls}
+        """
+
+rule erds:
+    input:
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index'],
+        vcf = "calls/{sample}.g.vcf",
+    output: "erds/{sample}/{sample}.events"
+    params:
+        dr = "erds/{sample}"
+    conda: "envs/erds.yaml"
+    shell:
+        "{config[erds]} -o {params.dr} -b {input.bam} "
+        "-v {input.vcf} -r {input.ref}"
+
+rule combineCalls:
+    input: 
+        pytor = "cnvpytor/{sample}.pytor.calls", 
+        erds = "erds/{sample}/{sample}.events",
+        interval = "targets.intervals",
+    output: "combined/{sample}.cnvcalls"
+    conda: "envs/R.yaml"
+    shell: "{config[combineCalls]} {wildcards.sample} {input.pytor} {input.erds} "
+           "{input.interval} {output}"
+

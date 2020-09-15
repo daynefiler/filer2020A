@@ -1,0 +1,119 @@
+configfile: "config.yaml"
+
+GLOB = glob_wildcards('{proj}/inputs/{sample}/{runId}/{fastqBase}.fastq.gz')
+SR = dict()
+for (p,s,r,f) in zip(*GLOB):
+   SR.setdefault(p, {}).setdefault(s, {}).setdefault(r, []).append(f)
+
+rule all:
+    input:
+        ["%s/fastqc/%s/%s/%s_fastq.zip"%row for row in zip(*GLOB)], 
+        ["%s/markdup/%s.markdup.bam.flagstat"%row for row in zip(*GLOB[0:2])],
+        ["%s/counts/%s.counts"%row for row in zip(*GLOB[0:2])], 
+        ["%s/markdup/%s.markdup.bam.summary.txt"%row for row in zip(*GLOB[0:2])],
+        ["%s/%s.copynumber"%row for row in zip(SR.keys(), SR.keys())],
+        ["%s/%s.exomeDepth"%row for row in zip(SR.keys(), SR.keys())],
+
+
+rule exomeDepth:
+    input:
+        lambda wildcards: 
+            expand('{proj}/counts/{sample}.counts', 
+                   proj = wildcards.proj, 
+                   sample = SR[wildcards.proj].keys()),
+    output: "{proj}/{proj}.exomeDepth"
+    log: "{proj}/logs/{proj}.exomeDepth.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[exomeDepth]} --transProb=0.0001 --cnvLength=50000 "
+        "--outfile={output} {input} &> {log}"
+
+rule callCN:
+    input:
+        lambda wildcards: 
+            expand('{proj}/counts/{sample}.counts', 
+                   proj = wildcards.proj, 
+                   sample = SR[wildcards.proj].keys()),
+    output: "{proj}/{proj}.copynumber"
+    log: "{proj}/logs/{proj}.copynumber.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[callCN]} --prior=0.2 --width=1 "
+        "--outfile={output} {input} &> {log}"
+
+rule getcounts:
+    input:
+        bamfile = "{proj}/markdup/{sample}.markdup.bam",
+        intfile = "{proj}/target.intervals"
+    output: "{proj}/counts/{sample}.counts"
+    log: "{proj}/logs/counts/{sample}.counts.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[getCounts]} {input.bamfile} {input.intfile} {output} &> {log}"
+
+rule flagstat:
+    input: "{proj}/markdup/{sample}.markdup.bam"
+    output: "{proj}/markdup/{sample}.markdup.bam.flagstat"
+    wrapper: "0.61.0/bio/samtools/flagstat"
+
+rule alignmetrics:
+    input: 
+        bam = "{proj}/markdup/{sample}.markdup.bam",
+        ref = config['bwa_index']
+    output: "{proj}/markdup/{sample}.markdup.bam.summary.txt"
+    log: "{proj}/logs/picard/collectalignmentsummarymetrics/{sample}.log"
+    wrapper: "0.61.0/bio/picard/collectalignmentsummarymetrics"
+
+rule markdup:
+    input: "{proj}/merged/{sample}.bam"
+    output:
+        bam = "{proj}/markdup/{sample}.markdup.bam",
+        bai = "{proj}/markdup/{sample}.markdup.bai",
+        metrics = "{proj}/markdup/{sample}.markdup.metrics.txt"
+    log: "{proj}/logs/picard/markdup/{sample}.log"
+    params:
+        "REMOVE_DUPLICATES=false",
+        "CREATE_INDEX=true",
+        'TMP_DIR="%s"'%config['temp_dir']
+    wrapper: "0.61.0/bio/picard/markduplicates"
+
+rule merge:
+    input:
+        lambda wildcards: 
+            expand('{proj}/mapped/{sample}.{runId}.bam', 
+                   proj = wildcards.proj, 
+                   sample = wildcards.sample, 
+                   runId = SR[wildcards.proj][wildcards.sample])
+    output: bam = temp("{proj}/merged/{sample}.bam")
+    log: "{proj}/logs/picard/merged/{sample}.log"
+    params: "VALIDATION_STRINGENCY=LENIENT"
+    wrapper: "0.61.0/bio/picard/mergesamfiles"
+
+rule bwamem:
+    input:
+        reads = lambda wildcards: 
+            expand('{proj}/inputs/{sample}/{runId}/{fastq}.fastq.gz', 
+                   proj = wildcards.proj, 
+                   sample = wildcards.sample, 
+                   runId = wildcards.runId, 
+                   fastq = SR[wildcards.proj][wildcards.sample][wildcards.runId])
+    output: temp("{proj}/mapped/{sample}.{runId}.bam")
+    log: "{proj}/logs/bwa_mem/{sample}.{runId}.log"
+    params:
+        index = config['bwa_index'],
+        extra = r"-R '@RG\tID:{sample}_{runId}\tSM:{sample}\tPL:Illumina\tCN:UNC'",
+        sort = "picard",
+        sort_order = "coordinate",
+        sort_extra = 'TMP_DIR="%s"'%config['temp_dir']
+    threads: 8
+    wrapper: "0.61.0/bio/bwa/mem"
+
+rule fastqc:
+    input: "{proj}/inputs/{sample}/{runId}/{stem}.fastq.gz",
+    output:
+        html = "{proj}/fastqc/{sample}/{runId}/{stem}.html",
+        zip = "{proj}/fastqc/{sample}/{runId}/{stem}_fastq.zip"
+    params: ""
+    wrapper: "0.61.0/bio/fastqc"
+
+

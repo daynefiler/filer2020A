@@ -1,0 +1,9 @@
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+bwa_index: /pathToMyDir/Refs/gatkBundle/gcp-public-data--broad-references/hg19/v0/Homo_sapiens_assembly19.fasta
+temp_dir: /pathToMyDir/CNV/wgsAnalysis/scratch
+dbsnp: /pathToMyDir/Refs/gatkBundle/gcp-public-data--broad-references/hg19/v0/dbsnp_138.b37.vcf.gz
+erds: /pathToMyDir/CNV/wgsAnalysis/tools/bin/erds_pipeline
+combineCalls: /pathToMyDir/CNV/wgsAnalysis/scripts/combineCalls.R
+depthQuantile: /pathToMyDir/CNV/wgsAnalysis/scripts/depthQuantile.R

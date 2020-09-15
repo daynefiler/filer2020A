@@ -1,0 +1,36 @@
+Package: filer2020A
+Type: Package
+Title: Analysis for Filer2020AA
+Version: 1.0
+Authors@R: 
+  c(person("Dayne L", "Filer", 
+           role = c("aut", "cre"), 
+           email = "dayne.filer@gmail.com",
+           comment = c(ORCID = "0000-0002-3443-5315")))
+Maintainer: Dayne Filer <dayne.filer@gmail.com>
+Description: This package exists as a distributable and reproducible record
+    for the research presented in the Filer et al. 2020 manuscript, '' 
+    <insert link here>
+License: GPL-3.0
+Depends: R (>= 3.5.0), data.table
+Imports:
+    ggthemes,
+    graphics,
+    plot.matrix,
+    beeswarm,
+    mcCNV,
+    stats,
+    dlfUtils,
+    ExomeDepth,
+    caret,
+    Rfast
+Suggests:
+    eulerr,
+    xtable
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr
+Additional_repositories: https://daynefiler.github.io/drat
+

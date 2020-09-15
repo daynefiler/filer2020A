@@ -1,0 +1,17 @@
+{
+    "__default__": {
+        "partition": "batch",
+        "memory": 20000,
+        "name": "{rule}.{wildcards}",
+        "time": "8-00:00:00"
+    },
+    "markdup": {
+        "partition": "batch",
+        "memory": 60000,
+        "name": "{rule}.{wildcards}",
+        "time": "8-00:00:00"
+    },
+    "depthQuantile": {
+        "memory": 40000,
+    }
+}

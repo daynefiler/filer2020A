@@ -15,3 +15,4 @@ vignettes/*.pdf
 vignettes/figures
 vignettes/tables
 vignettes/data
+vignettes/*.docx

@@ -1,0 +1,8 @@
+{
+    "__default__": {
+        "partition": "batch",
+        "memory": 20000,
+        "name": "exome.{rule}.{wildcards}",
+        "time": "1-00:00:00",
+    }
+}

@@ -1,0 +1,19 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base=3.6
+  - r-data.table=1.12.8
+  - bioconductor-genomicranges=1.38.0
+  - r-rfast=1.9.5
+  - bioconductor-rsamtools=2.2.0 
+  - r-matrixstats=0.55.0 
+  - r-tidyr=1.0.2 
+  - r-devtools=2.2.1
+  - r-r.utils=2.9.2 
+  - r-rslurm=0.4.0 
+  - r-docopt=0.6.1
+  - r-exomedepth=1.1.15
+  - r-beeswarm=0.2.3
+  - r-plot.matrix=1.2
+  - r-ggthemes=4.2.0

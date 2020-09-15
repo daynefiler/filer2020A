@@ -1,0 +1,561 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{rotating}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+%% Supplemental figure notation
+\renewcommand\thefigure{S\arabic{figure}}
+\renewcommand\thetable{S\arabic{table}}
+
+\DeclareUnicodeCharacter{251C}{\mbox{\kern.23em
+  \vrule height2.2exdepth1exwidth.4pt\vrule height2.2ptdepth-1.8ptwidth.23em}}
+\DeclareUnicodeCharacter{2500}{\mbox{\vrule height2.2ptdepth-1.8ptwidth.5em}}
+\DeclareUnicodeCharacter{2514}{\mbox{\kern.23em
+  \vrule height2.2exdepth-1.8ptwidth.4pt\vrule height2.2ptdepth-1.8ptwidth.23em}}
+\DeclareUnicodeCharacter{2052}{\textdiscount}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+
+\begin{document}
+
+<<echo=FALSE,results='hide',warning=FALSE,message=FALSE>>=
+library(knitr)
+knit_theme$set("bclear")
+knitr::opts_chunk$set(fig.path = "figures/",
+                      dev = c("pdf", "png"),
+                      dpi = 300,
+                      fig.width = 3.38,
+                      fig.height = 2.5,
+                      fig.show = 'hide',
+                      dev.args = list(pdf = list(pointsize = 8),
+                                      png = list(pointsize = 8)),
+                      background = "#F7F7F7",
+                      warning = FALSE,
+                      message = FALSE,
+                      error = FALSE,
+                      results = 'hide')
+library(filer2020A)
+library(mcCNV)
+library(xtable)
+library(eulerr)
+library(dlfUtils)
+library(parallel)
+library(grid)
+options(xtable.table.placement = "")
+options(xtable.include.rownames = FALSE)
+options(xtable.sanitize.text.function = I)
+options(xtable.booktabs = TRUE)
+@
+
+\title{Supplemental Information}
+\author{Dayne Filer}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Setup}
+
+<<eval=FALSE>>=
+library(filer2020A)
+library(dlfUtils) ## Needed for plotting utilities
+library(parallel)
+library(eulerr)
+library(grid)
+@
+
+\section{Summary of data}
+
+<<>>=
+data(subjectMeta)
+poolTbl <- subjectMeta[ ,
+                       .(N = .N,
+                         medExon = round(median(medIntMolCount), 0),
+                         medTotal = round(median(totalMolCount), 0),
+                         minTotal = min(totalMolCount),
+                         maxTotal = max(totalMolCount),
+                         rsdTotal = sd(totalMolCount)/mean(totalMolCount)*100),
+                       by = .(pool, capture, multiplexCapture)]
+poolTbl[ , rsdTotal := round(rsdTotal, 1)]
+@
+
+<<echo=FALSE>>=
+saveRDS(poolTbl, "data/poolTbl.rds")
+wrapNum <- function(x) sprintf("\\num{%s}", x)
+poolTbl[ , medExon  := wrapNum(medExon)]
+poolTbl[ , medTotal := wrapNum(medTotal)]
+poolTbl[ , minTotal := wrapNum(minTotal)]
+poolTbl[ , maxTotal := wrapNum(maxTotal)]
+poolTbl[ , rsdTotal := wrapNum(rsdTotal)]
+mult <- which(!poolTbl$multiplexCapture)
+# mult <- rep("\\rowcolor[gray]{0.95}", sum(!poolTbl$multiplexCapture))
+# poolTbl[ , multiplexCapture := ifelse(multiplexCapture, "", "$\\times$")]
+poolTbl[ , multiplexCapture := NULL]
+poolTbl <- xtable(poolTbl, digits = 0, align = "cllcrrrrr")
+caption(poolTbl) <- "Summary of whole-exome sequencing. `pool' indicates the name of the pool of samples; `capture' indicates the capture platform for the pool; `N' gives the number of samples in the pool; `medExon' gives the pool median of the subject median mapped molecule count per exon; `medTotal' gives the median by pool of total mapped molecule counts per subject; `minTotal' and `maxTotal' give the minimum \\& maximum total mapped molecules; `rsdTotal' gives the relative standard deviation (SD/mean*100) of total mapped molecules.  Highlighted rows indicate captures were performed independently on each sample within the pool, otherwise captures were multiplexed across all samples within the pool."
+label(poolTbl) <- "tab:poolSummary"
+print(poolTbl,
+      add.to.row = list(pos = as.list(mult - 1),
+                        command = rep("\\rowcolor[gray]{0.9} ", length(mult))),
+      file = "tables/poolSummary.tex")
+@
+
+\input{tables/poolSummary.tex}
+
+\newpage
+\section{Mean-variance relationship for multplexed versus independent capture}
+
+To show the difference in independent and multiplexed captures, we randomly select pools of samples independently-captured using the same platform.
+We then calculate interval statistics (mean, variance, etc.) across the pools.
+<<eval=FALSE>>=
+smplSubject <- function(poolName, n) {
+  data(subjectMeta, envir = environment())
+  subjectMeta[pool == poolName, sample(subject, n, replace = FALSE)]
+}
+set.seed(1234)
+pools <- c(replicate(5, smplSubject("NCGENES", 16), simplify = FALSE))
+names(pools) <- c(sprintf("randNCG_%d", 1:5))
+pools <- c(pools,
+           with(subjectMeta[pool != "NCGENES"], split(subject, pool)))
+@
+
+<<eval=FALSE>>=
+## Calculate mean-variance by pool
+mnvr <- mclapply(pools, subsetCounts, mc.cores = length(pools))
+mnvr <- mclapply(mnvr, calcIntStats, mc.cores = length(mnvr))
+for (i in seq_along(mnvr)) {
+  mnvr[[i]][ , pool := names(mnvr)[i]]
+}
+mnvr <- rbindlist(mnvr)
+setkey(mnvr, pool); setcolorder(mnvr)
+
+## Estimate alpha0
+alpha0 <- mclapply(pools, estAlpha0, mc.cores = length(pools))
+@
+
+<<include=FALSE>>=
+mnvr <- readRDS("../inst/noBuild/mnvr.rds")
+alpha0 <- readRDS("../inst/noBuild/alpha0.rds")
+@
+
+<<alpha0,eval=FALSE>>=
+a0tbl <- data.table(pool = names(alpha0),
+                    a0 = sapply(alpha0, "[[", "a0"),
+                    N = sapply(alpha0, "[[", "N"))
+a0tbl[ , aMn := a0/N]
+calcRange <- function(x) {
+  subjectMeta[subject %in% x,
+              .(mnCount = min(totalMolCount),
+                mdCount = median(totalMolCount),
+                mxCount = max(totalMolCount),
+                rsCount = sd(totalMolCount)/mean(totalMolCount)*100)]
+}
+poolCts <- lapply(pools, calcRange)
+poolCts <- lapply(names(poolCts), function(x) poolCts[[x]][ , pool := x])
+poolCts <- rbindlist(poolCts)
+a0tbl <- merge(a0tbl, poolCts)
+a0tbl[ , mc := !grepl("IDT-IC|rand", pool)]
+a0tbl[ , idt := grepl("IDT", pool)]
+pltAlpha0(a0tbl)
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/alpha0-1.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\newpage
+<<mnVrPlot,eval=FALSE>>=
+aglPools <- c(sprintf("randNCG_%d", 1:5), "Pool1", "Pool2", "WGS", "SMA1", "SMA2")
+with(mnvr[pool %in% aglPools], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = aglPools),
+              colVec = c(rep('darkblue', 5), rep('darkorange', 5)),
+              lgnd = FALSE)
+})
+# legend(x = "center", lwd = 4, col = c('darkblue', 'darkorange'),
+#        c("AGL-IC", "AGL-MC"), bty = "n", cex = 0.75)
+addfiglab("A")
+idtPools <- c("IDT-MC", "IDT-IC", "IDT-RR")
+with(mnvr[pool %in% idtPools], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = idtPools),
+              colVec = c("darkorange", "darkblue", "darkorange"),
+              lgnd = FALSE)
+})
+addfiglab("B")
+with(mnvr[pool %in% c("WGS", "IDT-RR")], {
+  pltMnVrCont(dat = as.data.table(as.list(environment())),
+              grpVec = factor(pool, levels = c("WGS", "IDT-RR")),
+              colVec = c("darkblue", "darkorange"))
+})
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/mnVrPlot-1.pdf}%
+  \includegraphics[]{figures/mnVrPlot-2.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/mnVrPlot-3.pdf}%
+  \caption{Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horiontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.}
+\end{figure}
+
+\newpage
+\section{ExomeDepth selection}
+
+<<edSelection>>=
+pltSubjectStatByPool("medIntMolCount", ylab = "Median count per exon")
+addfiglab("A")
+pltSubjectStatByPool("overallPhi", ylab = "Overdispersion (phi)")
+addfiglab("B")
+pltSubjectStatByPool("propSelected", ylab = "Proportion of controls selected")
+addfiglab("C")
+pltSubjectStatByPool("nSelected", ylab = "Number of controls selected")
+addfiglab("D")
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/edSelection-1.pdf}%
+  \includegraphics[]{figures/edSelection-2.pdf}
+  \includegraphics[]{figures/edSelection-3.pdf}%
+  \includegraphics[]{figures/edSelection-4.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\newpage
+\section{Comparing calls on simulation study}
+
+<<simPlts,fig.width=2.25,fig.height=2.25>>=
+data(simRes)
+procSimRes <- lapply(simRes, function(x) procRes(x$clpRes))
+
+simResTbl <- lapply(procSimRes,
+                    function(x) x$mnDat[ , .(mcc, tpr, fdr), keyby = dep])
+simResTbl <- Reduce(merge, simResTbl)
+setnames(simResTbl,
+         c("dep",
+           "mcMCC", "mcTPR", "mcFDR",  ## mcCNV
+           "edMCC", "edTPR", "edFDR",  ## ExomeDepthDefault
+           "ebMCC", "ebTPR", "ebFDR")) ## ExomeDepthBest
+setcolorder(simResTbl,
+            c("dep", "mcMCC", "edMCC", "ebMCC", "mcTPR",
+              "edTPR", "ebTPR", "mcFDR", "edFDR", "ebFDR"))
+simResTbl <- simResTbl[ , lapply(.SD, signif, 3), by = dep]
+
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "mcc", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("A")
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "tpr", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("B")
+pltStatCompare(xRes = procSimRes$ExomeDepthDefault, yRes = procSimRes$mcCNV,
+               stat = "fdr", xlab = "ExomeDepth (default)", ylab = "mcCNV")
+addfiglab("C")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "mcc", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("D")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "tpr", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("E")
+pltStatCompare(xRes = procSimRes$ExomeDepthBest, yRes = procSimRes$mcCNV,
+               stat = "fdr", xlab = "ExomeDepth (correct)", ylab = "mcCNV")
+addfiglab("F")
+@
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/simPlts-1.pdf}%
+  \includegraphics[]{figures/simPlts-2.pdf}%
+  \includegraphics[]{figures/simPlts-3.pdf}
+  \includegraphics[]{figures/simPlts-4.pdf}%
+  \includegraphics[]{figures/simPlts-5.pdf}%
+  \includegraphics[]{figures/simPlts-6.pdf}
+  \caption{}
+\end{figure}
+
+<<echo=FALSE>>=
+setnames(simResTbl, c("dep", rep(c("mcCNV", "ED-def", "ED-sim"), 3)))
+simResTbl <- xtable(simResTbl, align = "clrrrrrrrrr")
+digits(simResTbl) <- xdigits(simResTbl)
+caption(simResTbl) <- "Simulation results by algorithm. ED-def: ExomeDepth with default parameters; ED-sim: ExomeDepth with simulation-matched parameters. Values represent the mean over 200 simulations."
+tr <- " & \\multicolumn{3}{c}{MCC} & \\multicolumn{3}{c}{TPR} & \\multicolumn{3}{c}{FDR} \\\\ \\cmidrule(lr){2-4}\\cmidrule(lr){5-7}\\cmidrule(lr){8-10}"
+label(simResTbl) <- "tab:simResTbl"
+print(simResTbl,
+      hline.after = c(0, nrow(simResTbl)),
+      add.to.row = list(pos = list(-1, -1), command = c("\\toprule ", tr)),
+      file = "tables/simResTbl.tex")
+@
+
+\input{tables/simResTbl.tex}
+
+\newpage
+\section{Comparing calls on WGS pool}
+
+<<eval=FALSE>>=
+data(wgsPoolCalls)
+mergeAll <- function(x, y) merge(x, y, all = TRUE)
+wgs <- Reduce(mergeAll, wgsPoolCalls)
+data(intAgl)
+xpandInt <- function(int, sbjVec) {
+  lst <- vector(mode = "list", length = length(sbjVec))
+  names(lst) <- sbjVec
+  for (s in sbjVec) {
+    lst[[s]] <- copy(int)
+    lst[[s]][ , subject := s]
+  }
+  rbindlist(lst)
+}
+wgsAgl <- xpandInt(intAgl, wgs[ , unique(subject)])
+setkeyv(wgsAgl, key(wgs))
+wgs <- wgs[wgsAgl]
+rm(wgsAgl)
+wgs <- wgs[!(rlcr),
+           .(mcDup = !is.na(passFilter) & CN > 1,
+             edDup = !is.na(type) & type == "duplication",
+             wgDup = !is.na(erds) & !is.na(cnvpytor) & erds == "dup",
+             mcDel = !is.na(passFilter) & CN < 1,
+             edDel = !is.na(type) & type == "deletion",
+             wgDel = !is.na(erds) & !is.na(cnvpytor) & erds == "del"),
+           by = .(subject, seqnames, start, end)]
+wgs[ , mc := mcDup | mcDel]
+wgs[ , ed := edDup | edDel]
+wgs[ , wg := wgDup | wgDel]
+setcolorder(wgs, c(key(wgs), 'mc', 'ed', 'wg'))
+wgsCallBySbj <- wgs[ , lapply(.SD, sum), .SDcols = is.logical, by = subject]
+saveRDS(wgsCallBySbj, "data/wgsCallBySbj.rds")
+@
+
+<<echo=FALSE,eval=FALSE>>=
+wgsCallBySbj[ , subject := sanitize(subject)]
+setnames(wgsCallBySbj, c("subject", rep(c("MC", "ED", "WG"), 3)))
+wgsCallBySbj <- xtable(wgsCallBySbj, digits = 0, align = "clrrrrrrrrr")
+caption(wgsCallBySbj) <- "Number of CNV calls by subject and algorithm for the `WGS' pool. `MC' indicates the mcCNV algorithm; `ED' indicates the ExomeDepth algorithm; `WG' indicates the overlap of ERDS/cnvpytor calls from matched whole-genome sequencing. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis."
+tr <- " & \\multicolumn{3}{c}{Total} & \\multicolumn{3}{c}{Duplications} & \\multicolumn{3}{c}{Deletions} \\\\ \\cmidrule(lr){2-4}\\cmidrule(lr){5-7}\\cmidrule(lr){8-10}"
+label(wgsCallBySbj) <- "tab:wgsCallBySbj"
+print(wgsCallBySbj,
+      hline.after = c(0, nrow(wgsCallBySbj)),
+      add.to.row = list(pos = list(-1, -1), command = c("\\toprule ", tr)),
+      file = "tables/wgsCallBySbj.tex")
+@
+
+\input{tables/wgsCallBySbj.tex}
+
+<<eval=FALSE>>=
+pmLst <- list()
+pmLst$mc <- with(wgs, evalPred(mc, wg))
+pmLst$ed <- with(wgs, evalPred(ed, wg))
+pmLst$mcSub <- with(wgs[!grepl("790|851", subject)], evalPred(mc, wg))
+pmLst$edSub <- with(wgs[!grepl("790|851", subject)], evalPred(ed, wg))
+pmLst$mcDup <- with(wgs, evalPred(mcDup, wgDup))
+pmLst$edDup <- with(wgs, evalPred(edDup, wgDup))
+pmLst$mcSubDup <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(mcDup, wgDup))
+pmLst$edSubDup <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(edDup, wgDup))
+pmLst$mcDel <- with(wgs, evalPred(mcDel, wgDel))
+pmLst$edDel <- with(wgs, evalPred(edDel, wgDel))
+pmLst$mcSubDel <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(mcDel, wgDel))
+pmLst$edSubDel <- with(wgs[!grepl("790|851", subject)],
+                       evalPred(edDel, wgDel))
+predMetrics <- as.data.table(do.call(rbind, pmLst), keep.rownames = "PredSet")
+@
+
+<<echo=FALSE,eval=FALSE>>=
+subRows <- grep("Sub", predMetrics$PredSet)
+predMetrics[ ,
+            var := ifelse(grepl("Dup", PredSet), "DUP",
+                          ifelse(grepl("Del", PredSet), "DEL", "\\shortstack{DUP \\\\ + \\\\ DEL}"))]
+predMetrics[ , set := ifelse(grepl("Sub", PredSet), "Sub", "Full")]
+predMetrics[ , alg := ifelse(grepl("mc", PredSet), "MC", "ED")]
+predMetrics[ , PredSet := NULL]
+setcolorder(predMetrics, c("var", "set", "alg"))
+# predMetrics[predMetrics[ , last(.I), by = rleid(var)][ , V1],
+#             var := sprintf("\\multirow{-4}{*}{\\cellcolor{white}\\rotatebox[origin=c]{90}{%s}}", var)]
+# predMetrics[!grepl("[:{:]", var), var := "\\cellcolor{white}"]
+predMetrics[predMetrics[ , last(.I), by = rleid(var)][ , V1],
+            var := sprintf("\\multirow{-4}{*}{\\cellcolor{white}%s}", var)]
+predMetrics[!grepl("multirow", var), var := "\\cellcolor{white}"]
+predMetrics[predMetrics[ , last(.I), by = rleid(set)][ , V1],
+            set := sprintf("\\multirow{-2}{*}{%s}", set)]
+predMetrics[!grepl("multirow", set), set := ""]
+
+predMetrics <- xtable(predMetrics, align = "ccllrrrrrrr")
+colnames(predMetrics)[1:3] <- ""
+caption(predMetrics) <- "mcCNV (MC)/ExomeDepth (ED) calls for `WGS' pool (used as prediction) versus the ERDS/cnvpytor calls from matched genome sequencing (used as truth). Calls are subdivided by duplications (DUP) and deletions (DEL). `Full' gives performance across the full pool; `Sub' gives the performance excluding the poorly correlated samples NCG\\_00790 and NCG\\_00851 (gray rows). `MCC' is Matthew's correlation coefficient, `TPR' is true positive rate/sensitivity, `FDR' is false discovery rate, `PPV' is positive predictive value, `BalAcc' is balanced accuracy. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis."
+label(predMetrics) <- "tab:predMetrics"
+print(predMetrics,
+      add.to.row = list(pos = c(as.list(subRows - 1), 4, 8),
+                        command = c(rep("\\rowcolor[gray]{0.9} ", length(subRows)),
+                                    "\\midrule ", "\\midrule ")),
+      file = "tables/predMetrics.tex")
+@
+
+\input{tables/predMetrics.tex}
+
+<<include=FALSE>>=
+wgs <- readRDS("../inst/noBuild/wgs.rds")
+@
+
+\newpage
+<<vennDiag>>=
+ctsAll <- euler(wgs[ , .(mc, ed, wg)])
+ctsSub <- euler(wgs[!grepl("790|851", subject), .(mc, ed, wg)])
+ctsAllDup <- euler(wgs[ , .(mcDup, edDup, wgDup)])
+ctsSubDup <- euler(wgs[!grepl("790|851", subject), .(mcDup, edDup, wgDup)])
+ctsAllDel <- euler(wgs[ , .(mcDel, edDel, wgDel)])
+ctsSubDel <- euler(wgs[!grepl("790|851", subject), .(mcDel, edDel, wgDel)])
+eulerr_options(fills = list(fill = c("#E9E9E9", "#7F7FC4", "#FFC57F")),
+               quantities = list(cex = 0.5))
+gridFigLab <- function(lab) {
+  grid.text(lab, x = 0, y = 1, hjust = 0, vjust = 1, gp = gpar(font = 2))
+}
+plot(ctsSubDup, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("A")
+grid.text("DUPLICATIONS", x = 0.5, y = 0.9)
+plot(ctsSubDel, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("B")
+grid.text("DELETIONS", x = 0.5, y = 0.9)
+plot(ctsAllDup, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("C")
+grid.text("DUPLICATIONS", x = 0.5, y = 0.9)
+plot(ctsAllDel, quantities = TRUE, labels = FALSE, main = "")
+gridFigLab("D")
+grid.text("DELETIONS", x = 0.5, y = 0.9)
+@
+
+\begin{figure}
+  \centering
+  \includegraphics[]{figures/vennDiag-1.pdf}%
+  \includegraphics[]{figures/vennDiag-2.pdf}
+  \includegraphics[]{figures/vennDiag-3.pdf}%
+  \includegraphics[]{figures/vennDiag-4.pdf}
+  \caption{(A-B) included in manuscript; (C-D) show the concordance of duplications and deletions for the whole WGS pool. mcCNV calls in gray; ExomeDepth calls in blue; ERDS/cnvpytor calls in orange.}
+\end{figure}
+
+\section{Slurm scripts to perform simulation study}
+
+\subsection{Create count objects}
+
+<<eval=FALSE,code=readLines("../inst/slurmScripts/varDepthCounts.R")>>=
+@
+
+\subsection{Run mcCNV on count objects}
+
+<<eval=FALSE,code=readLines("../inst/slurmScripts/varDepthMcCalls.R")>>=
+@
+
+\subsection{Run ExomeDepth with default parameters on count objects}
+
+<<eval=FALSE,code=readLines("../inst/slurmScripts/varDepthEdDefaultCalls.R")>>=
+@
+
+\subsection{Run ExomeDepth with simulation-matched parameters on count objects}
+
+<<eval=FALSE,code=readLines("../inst/slurmScripts/varDepthEdBestCalls.R")>>=
+@
+
+\section{Snakemake notes}
+
+For the Snakemake files to run, the files must be organized into a specific directory structure.
+Within the exome analysis directory, pools are identified by the following structure:
+
+\begin{quote}
+\texttt{poolName/inputs/sampleName/laneID/R1.fastq.gz} \newline
+\texttt{poolName/inputs/sampleName/laneID/R2.fastq.gz}
+\end{quote}
+
+Runs within the same `sampleName' will be merged into a single BAM file.
+For example, the following shows the files for the NCG\_00790 sample within the WGS pool.
+
+<<>>=
+# WGS/inputs/NCG_00790/
+# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L001
+#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R1_001.fastq.gz
+#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R2_001.fastq.gz
+# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L002
+#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R1_001.fastq.gz
+#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R2_001.fastq.gz
+# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L003
+#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L003_R1_001.fastq.gz
+#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L003_R2_001.fastq.gz
+# ├── 190830_UNC41-A00434_0050_AHCLVLDRXX-GATGAATC_S6_L001
+#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R1_001.fastq.gz
+#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R2_001.fastq.gz
+# └── 190830_UNC41-A00434_0050_AHCLVLDRXX-GATGAATC_S6_L002
+#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R1_001.fastq.gz
+#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R2_001.fastq.gz
+
+@
+
+The genome file follows the same convention, but simply requires \texttt{inputs} and samples are not subdivided by pool.
+
+The provided config and cluster files will need to be updated to match the cluster envrionment used; they are provided as were used as a guide.
+The following shows a paired-down directory structure for the exome analysis; note the symlink to `target.intervals' within the pool folder.
+The `target.intervals' file should point to a .RDS object with a valid mcCNV interval object (see \texttt{?mcCNV::cnvValidInterval}).
+
+<<>>=
+# wesAnalysis/
+# ├── cluster.json
+# ├── config.yaml
+# ├── envs
+#     └── mcCNV.yaml
+# ├── runme.snakemake
+# ├── scratch
+# ├── scripts
+#     ├── aggCalls.R
+#     ├── callCN.R
+#     ├── exomeDepth.R
+#     └── getCounts.R
+# ├── Snakefile
+# ├── slurmOut
+# └── WGS
+#     ├── inputs
+#     └── target.intervals -> path to interval .RDS object
+@
+
+For the genome analysis, ERDS will have to be installed manually prior to running the pipeline.
+We used the following shell script, but have zero expecations it will work within all environments.
+
+<<eval=FALSE,code=readLines("../inst/snakemakeScripts/wgsAnalysis/getAndBuildERDS.sh"),highlight=FALSE>>=
+@
+
+\section{Snakemake file for exome anlaysis}
+
+Note, Snakemake file and all accessory files contained within the filer2020A package `inst' directory.
+
+<<eval=FALSE,code=readLines("../inst/snakemakeScripts/wesAnalysis/Snakefile"),highlight=FALSE>>=
+@
+
+\section{Snakemake file for genome anlaysis}
+
+Note, Snakemake file and all accessory files contained within the filer2020A package `inst' directory.
+
+<<eval=FALSE,code=readLines("../inst/snakemakeScripts/wgsAnalysis/Snakefile"),highlight=FALSE>>=
+@
+
+
+\end{document}

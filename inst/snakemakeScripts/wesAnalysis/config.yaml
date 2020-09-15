@@ -1,0 +1,9 @@
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+bwa_index: /pathToMyDir/Refs/gatkBundle/gcp-public-data--broad-references/hg19/v0/Homo_sapiens_assembly19.fasta
+temp_dir: /pathToMyDir/CNV/wesAnalysis/scratch
+getCounts: /pathToMyDir/CNV/wesAnalysis/scripts/getCounts.R
+callCN: /pathToMyDir/CNV/wesAnalysis/scripts/callCN.R
+aggCall: /pathToMyDir/CNV/wesAnalysis/scripts/aggCalls.R
+exomeDepth: /pathToMyDir/CNV/wesAnalysis/scripts/exomeDepth.R

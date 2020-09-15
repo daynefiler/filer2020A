@@ -1,0 +1,7 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - r-base=3.6
+  - r-data.table=1.12.8
+  - r-docopt=0.6.1
