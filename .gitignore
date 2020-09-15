@@ -13,3 +13,5 @@ vignettes/*.bbl
 vignettes/*.pdf
 *.Rproj
 vignettes/figures
+vignettes/tables
+vignettes/data
