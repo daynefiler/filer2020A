@@ -34,7 +34,6 @@
 \author[1,2]{Bradford C Powell}
 \author[1,2]{Darius M Bost}
 \author[1]{Clark D Jeffries}
-\author[1]{James P Evans}
 \author[1]{Jonathan S Berg}
 \author[1,2,3]{Kirk C Wilhelmsen}
 \affil[1]{UNC School of Medicine, Department of Genetics, Chapel Hill, NC}
@@ -366,7 +365,7 @@ Both algorithms demonstrated greater power to detect deletions.
 The medical genetics community still lacks robust exome-wide information about small (exon-level) variant prevalence.
 Others have established the reliability and cost-efficiency of pre-capture multiplexing \cite{ramos:2012aa,wesolowska:2011aa,shearer:2012aa,neiman:2012aa,rohland:2012aa}, and most commercial exome capture platforms have protocols for pre-capture multiplexing.
 Here, we demonstrate the reduction in inter-sample variance when pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
-Despite the benefits, many clinical laboratories do no employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
+Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
 While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase the diagnostic yield for patients.
 
 Multiplexed capture is not without limitations.
