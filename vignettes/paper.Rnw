@@ -411,6 +411,10 @@ Having eliminated calls from repetitive and low-complexity regions, we believe p
 To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
 Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.
 
+\section{Funding information}
+
+This work was supported by the National Institute of Child and Human Development [F30HD101228] and by the National Institute of General Medical Sciences [5T32GM067553].
+
 %%----------------------------------------------------------------------------%%
 %% References
 %%----------------------------------------------------------------------------%%
