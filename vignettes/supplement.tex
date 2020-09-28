@@ -1,0 +1,1162 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.196, 0.196, 0.196}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.063,0.58,0.627}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.063,0.58,0.627}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.588,0.588,0.588}{#1}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0.196,0.196,0.196}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.196,0.196,0.196}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.231,0.416,0.784}{#1}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.627,0,0.314}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0,0.631,0.314}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.78,0.227,0.412}{#1}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{fullpage}
+\usepackage{mathtools}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{bm}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{rotating}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
+%% Supplemental figure notation
+\renewcommand\thefigure{S\arabic{figure}}
+\renewcommand\thetable{S\arabic{table}}
+
+\DeclareUnicodeCharacter{251C}{\mbox{\kern.23em
+  \vrule height2.2exdepth1exwidth.4pt\vrule height2.2ptdepth-1.8ptwidth.23em}}
+\DeclareUnicodeCharacter{2500}{\mbox{\vrule height2.2ptdepth-1.8ptwidth.5em}}
+\DeclareUnicodeCharacter{2514}{\mbox{\kern.23em
+  \vrule height2.2exdepth-1.8ptwidth.4pt\vrule height2.2ptdepth-1.8ptwidth.23em}}
+\DeclareUnicodeCharacter{2052}{\textdiscount}
+
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+
+
+
+\title{Supplemental Information}
+\author{Dayne Filer}
+\maketitle
+
+\tableofcontents
+
+\newpage
+\section{Setup}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(filer2020A)}
+\hlkwd{library}\hlstd{(dlfUtils)} \hlcom{## Needed for plotting utilities}
+\hlkwd{library}\hlstd{(parallel)}
+\hlkwd{library}\hlstd{(eulerr)}
+\hlkwd{library}\hlstd{(grid)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\section{Summary of data}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(subjectMeta)}
+\hlstd{poolTbl} \hlkwb{<-} \hlstd{subjectMeta[ ,}
+                       \hlkwd{.}\hlstd{(}\hlkwc{N} \hlstd{= .N,}
+                         \hlkwc{medExon} \hlstd{=} \hlkwd{round}\hlstd{(}\hlkwd{median}\hlstd{(medIntMolCount),} \hlnum{0}\hlstd{),}
+                         \hlkwc{medTotal} \hlstd{=} \hlkwd{round}\hlstd{(}\hlkwd{median}\hlstd{(totalMolCount),} \hlnum{0}\hlstd{),}
+                         \hlkwc{minTotal} \hlstd{=} \hlkwd{min}\hlstd{(totalMolCount),}
+                         \hlkwc{maxTotal} \hlstd{=} \hlkwd{max}\hlstd{(totalMolCount),}
+                         \hlkwc{rsdTotal} \hlstd{=} \hlkwd{sd}\hlstd{(totalMolCount)}\hlopt{/}\hlkwd{mean}\hlstd{(totalMolCount)}\hlopt{*}\hlnum{100}\hlstd{),}
+                       \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(pool, capture, multiplexCapture)]}
+\hlstd{poolTbl[ , rsdTotal} \hlkwb{:=} \hlkwd{round}\hlstd{(rsdTotal,} \hlnum{1}\hlstd{)]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\input{tables/poolSummary.tex}
+
+\newpage
+\section{Mean-variance relationship for multplexed versus independent capture}
+
+To show the difference in independent and multiplexed captures, we randomly select pools of samples independently-captured using the same platform.
+We then calculate interval statistics (mean, variance, etc.) across the pools.
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{smplSubject} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{poolName}\hlstd{,} \hlkwc{n}\hlstd{) \{}
+  \hlkwd{data}\hlstd{(subjectMeta,} \hlkwc{envir} \hlstd{=} \hlkwd{environment}\hlstd{())}
+  \hlstd{subjectMeta[pool} \hlopt{==} \hlstd{poolName,} \hlkwd{sample}\hlstd{(subject, n,} \hlkwc{replace} \hlstd{=} \hlnum{FALSE}\hlstd{)]}
+\hlstd{\}}
+\hlkwd{set.seed}\hlstd{(}\hlnum{1234}\hlstd{)}
+\hlstd{pools} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlkwd{replicate}\hlstd{(}\hlnum{5}\hlstd{,} \hlkwd{smplSubject}\hlstd{(}\hlstr{"NCGENES"}\hlstd{,} \hlnum{16}\hlstd{),} \hlkwc{simplify} \hlstd{=} \hlnum{FALSE}\hlstd{))}
+\hlkwd{names}\hlstd{(pools)} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlkwd{sprintf}\hlstd{(}\hlstr{"randNCG_%d"}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{))}
+\hlstd{pools} \hlkwb{<-} \hlkwd{c}\hlstd{(pools,}
+           \hlkwd{with}\hlstd{(subjectMeta[pool} \hlopt{!=} \hlstr{"NCGENES"}\hlstd{],} \hlkwd{split}\hlstd{(subject, pool)))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{## Calculate mean-variance by pool}
+\hlstd{mnvr} \hlkwb{<-} \hlkwd{mclapply}\hlstd{(pools, subsetCounts,} \hlkwc{mc.cores} \hlstd{=} \hlkwd{length}\hlstd{(pools))}
+\hlstd{mnvr} \hlkwb{<-} \hlkwd{mclapply}\hlstd{(mnvr, calcIntStats,} \hlkwc{mc.cores} \hlstd{=} \hlkwd{length}\hlstd{(mnvr))}
+\hlkwa{for} \hlstd{(i} \hlkwa{in} \hlkwd{seq_along}\hlstd{(mnvr)) \{}
+  \hlstd{mnvr[[i]][ , pool} \hlkwb{:=} \hlkwd{names}\hlstd{(mnvr)[i]]}
+\hlstd{\}}
+\hlstd{mnvr} \hlkwb{<-} \hlkwd{rbindlist}\hlstd{(mnvr)}
+\hlkwd{setkey}\hlstd{(mnvr, pool);} \hlkwd{setcolorder}\hlstd{(mnvr)}
+
+\hlcom{## Estimate alpha0}
+\hlstd{alpha0} \hlkwb{<-} \hlkwd{mclapply}\hlstd{(pools, estAlpha0,} \hlkwc{mc.cores} \hlstd{=} \hlkwd{length}\hlstd{(pools))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{a0tbl} \hlkwb{<-} \hlkwd{data.table}\hlstd{(}\hlkwc{pool} \hlstd{=} \hlkwd{names}\hlstd{(alpha0),}
+                    \hlkwc{a0} \hlstd{=} \hlkwd{sapply}\hlstd{(alpha0,} \hlstr{"[["}\hlstd{,} \hlstr{"a0"}\hlstd{),}
+                    \hlkwc{N} \hlstd{=} \hlkwd{sapply}\hlstd{(alpha0,} \hlstr{"[["}\hlstd{,} \hlstr{"N"}\hlstd{))}
+\hlstd{a0tbl[ , aMn} \hlkwb{:=} \hlstd{a0}\hlopt{/}\hlstd{N]}
+\hlstd{calcRange} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) \{}
+  \hlstd{subjectMeta[subject} \hlopt{%in%} \hlstd{x,}
+              \hlkwd{.}\hlstd{(}\hlkwc{mnCount} \hlstd{=} \hlkwd{min}\hlstd{(totalMolCount),}
+                \hlkwc{mdCount} \hlstd{=} \hlkwd{median}\hlstd{(totalMolCount),}
+                \hlkwc{mxCount} \hlstd{=} \hlkwd{max}\hlstd{(totalMolCount),}
+                \hlkwc{rsCount} \hlstd{=} \hlkwd{sd}\hlstd{(totalMolCount)}\hlopt{/}\hlkwd{mean}\hlstd{(totalMolCount)}\hlopt{*}\hlnum{100}\hlstd{)]}
+\hlstd{\}}
+\hlstd{poolCts} \hlkwb{<-} \hlkwd{lapply}\hlstd{(pools, calcRange)}
+\hlstd{poolCts} \hlkwb{<-} \hlkwd{lapply}\hlstd{(}\hlkwd{names}\hlstd{(poolCts),} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) poolCts[[x]][ , pool} \hlkwb{:=} \hlstd{x])}
+\hlstd{poolCts} \hlkwb{<-} \hlkwd{rbindlist}\hlstd{(poolCts)}
+\hlstd{a0tbl} \hlkwb{<-} \hlkwd{merge}\hlstd{(a0tbl, poolCts)}
+\hlstd{a0tbl[ , mc} \hlkwb{:=} \hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"IDT-IC|rand"}\hlstd{, pool)]}
+\hlstd{a0tbl[ , idt} \hlkwb{:=} \hlkwd{grepl}\hlstd{(}\hlstr{"IDT"}\hlstd{, pool)]}
+\hlkwd{pltAlpha0}\hlstd{(a0tbl)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/alpha0-1.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\newpage
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{aglPools} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlkwd{sprintf}\hlstd{(}\hlstr{"randNCG_%d"}\hlstd{,} \hlnum{1}\hlopt{:}\hlnum{5}\hlstd{),} \hlstr{"Pool1"}\hlstd{,} \hlstr{"Pool2"}\hlstd{,} \hlstr{"WGS"}\hlstd{,} \hlstr{"SMA1"}\hlstd{,} \hlstr{"SMA2"}\hlstd{)}
+\hlkwd{with}\hlstd{(mnvr[pool} \hlopt{%in%} \hlstd{aglPools], \{}
+  \hlkwd{pltMnVrCont}\hlstd{(}\hlkwc{dat} \hlstd{=} \hlkwd{as.data.table}\hlstd{(}\hlkwd{as.list}\hlstd{(}\hlkwd{environment}\hlstd{())),}
+              \hlkwc{grpVec} \hlstd{=} \hlkwd{factor}\hlstd{(pool,} \hlkwc{levels} \hlstd{= aglPools),}
+              \hlkwc{colVec} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlstr{'darkblue'}\hlstd{,} \hlnum{5}\hlstd{),} \hlkwd{rep}\hlstd{(}\hlstr{'darkorange'}\hlstd{,} \hlnum{5}\hlstd{)),}
+              \hlkwc{lgnd} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlstd{\})}
+\hlcom{# legend(x = "center", lwd = 4, col = c('darkblue', 'darkorange'),}
+\hlcom{#        c("AGL-IC", "AGL-MC"), bty = "n", cex = 0.75)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{)}
+\hlstd{idtPools} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"IDT-MC"}\hlstd{,} \hlstr{"IDT-IC"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)}
+\hlkwd{with}\hlstd{(mnvr[pool} \hlopt{%in%} \hlstd{idtPools], \{}
+  \hlkwd{pltMnVrCont}\hlstd{(}\hlkwc{dat} \hlstd{=} \hlkwd{as.data.table}\hlstd{(}\hlkwd{as.list}\hlstd{(}\hlkwd{environment}\hlstd{())),}
+              \hlkwc{grpVec} \hlstd{=} \hlkwd{factor}\hlstd{(pool,} \hlkwc{levels} \hlstd{= idtPools),}
+              \hlkwc{colVec} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"darkorange"}\hlstd{,} \hlstr{"darkblue"}\hlstd{,} \hlstr{"darkorange"}\hlstd{),}
+              \hlkwc{lgnd} \hlstd{=} \hlnum{FALSE}\hlstd{)}
+\hlstd{\})}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"B"}\hlstd{)}
+\hlkwd{with}\hlstd{(mnvr[pool} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlstr{"WGS"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)], \{}
+  \hlkwd{pltMnVrCont}\hlstd{(}\hlkwc{dat} \hlstd{=} \hlkwd{as.data.table}\hlstd{(}\hlkwd{as.list}\hlstd{(}\hlkwd{environment}\hlstd{())),}
+              \hlkwc{grpVec} \hlstd{=} \hlkwd{factor}\hlstd{(pool,} \hlkwc{levels} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"WGS"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)),}
+              \hlkwc{colVec} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"darkblue"}\hlstd{,} \hlstr{"darkorange"}\hlstd{))}
+\hlstd{\})}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/mnVrPlot-1.pdf}%
+  \includegraphics[]{figures/mnVrPlot-2.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/mnVrPlot-3.pdf}%
+  \caption{Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horiontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.}
+\end{figure}
+
+\newpage
+\section{ExomeDepth selection}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{pltSubjectStatByPool}\hlstd{(}\hlstr{"medIntMolCount"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"Median count per exon"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{)}
+\hlkwd{pltSubjectStatByPool}\hlstd{(}\hlstr{"overallPhi"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"Overdispersion (phi)"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"B"}\hlstd{)}
+\hlkwd{pltSubjectStatByPool}\hlstd{(}\hlstr{"propSelected"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"Proportion of controls selected"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"C"}\hlstd{)}
+\hlkwd{pltSubjectStatByPool}\hlstd{(}\hlstr{"nSelected"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"Number of controls selected"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"D"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/edSelection-1.pdf}%
+  \includegraphics[]{figures/edSelection-2.pdf}
+  \includegraphics[]{figures/edSelection-3.pdf}%
+  \includegraphics[]{figures/edSelection-4.pdf}
+  \caption{manuscript figure}
+\end{figure}
+
+\newpage
+\section{Comparing calls on simulation study}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(simRes)}
+\hlstd{procSimRes} \hlkwb{<-} \hlkwd{lapply}\hlstd{(simRes,} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{)} \hlkwd{procRes}\hlstd{(x}\hlopt{$}\hlstd{clpRes))}
+
+\hlstd{simResTbl} \hlkwb{<-} \hlkwd{lapply}\hlstd{(procSimRes,}
+                    \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{) x}\hlopt{$}\hlstd{mnDat[ ,} \hlkwd{.}\hlstd{(mcc, tpr, fdr),} \hlkwc{keyby} \hlstd{= dep])}
+\hlstd{simResTbl} \hlkwb{<-} \hlkwd{Reduce}\hlstd{(merge, simResTbl)}
+\hlkwd{setnames}\hlstd{(simResTbl,}
+         \hlkwd{c}\hlstd{(}\hlstr{"dep"}\hlstd{,}
+           \hlstr{"mcMCC"}\hlstd{,} \hlstr{"mcTPR"}\hlstd{,} \hlstr{"mcFDR"}\hlstd{,}  \hlcom{## mcCNV}
+           \hlstr{"edMCC"}\hlstd{,} \hlstr{"edTPR"}\hlstd{,} \hlstr{"edFDR"}\hlstd{,}  \hlcom{## ExomeDepthDefault}
+           \hlstr{"ebMCC"}\hlstd{,} \hlstr{"ebTPR"}\hlstd{,} \hlstr{"ebFDR"}\hlstd{))} \hlcom{## ExomeDepthBest}
+\hlkwd{setcolorder}\hlstd{(simResTbl,}
+            \hlkwd{c}\hlstd{(}\hlstr{"dep"}\hlstd{,} \hlstr{"mcMCC"}\hlstd{,} \hlstr{"edMCC"}\hlstd{,} \hlstr{"ebMCC"}\hlstd{,} \hlstr{"mcTPR"}\hlstd{,}
+              \hlstr{"edTPR"}\hlstd{,} \hlstr{"ebTPR"}\hlstd{,} \hlstr{"mcFDR"}\hlstd{,} \hlstr{"edFDR"}\hlstd{,} \hlstr{"ebFDR"}\hlstd{))}
+\hlstd{simResTbl} \hlkwb{<-} \hlstd{simResTbl[ ,} \hlkwd{lapply}\hlstd{(.SD, signif,} \hlnum{3}\hlstd{),} \hlkwc{by} \hlstd{= dep]}
+
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthDefault,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"mcc"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (default)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{)}
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthDefault,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"tpr"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (default)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"B"}\hlstd{)}
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthDefault,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"fdr"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (default)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"C"}\hlstd{)}
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthBest,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"mcc"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (correct)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"D"}\hlstd{)}
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthBest,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"tpr"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (correct)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"E"}\hlstd{)}
+\hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthBest,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
+               \hlkwc{stat} \hlstd{=} \hlstr{"fdr"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (correct)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"F"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[]{figures/simPlts-1.pdf}%
+  \includegraphics[]{figures/simPlts-2.pdf}%
+  \includegraphics[]{figures/simPlts-3.pdf}
+  \includegraphics[]{figures/simPlts-4.pdf}%
+  \includegraphics[]{figures/simPlts-5.pdf}%
+  \includegraphics[]{figures/simPlts-6.pdf}
+  \caption{}
+\end{figure}
+
+
+
+\input{tables/simResTbl.tex}
+
+\newpage
+\section{Comparing calls on WGS pool}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{data}\hlstd{(wgsPoolCalls)}
+\hlstd{mergeAll} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{y}\hlstd{)} \hlkwd{merge}\hlstd{(x, y,} \hlkwc{all} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlstd{wgs} \hlkwb{<-} \hlkwd{Reduce}\hlstd{(mergeAll, wgsPoolCalls)}
+\hlkwd{data}\hlstd{(intAgl)}
+\hlstd{xpandInt} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{int}\hlstd{,} \hlkwc{sbjVec}\hlstd{) \{}
+  \hlstd{lst} \hlkwb{<-} \hlkwd{vector}\hlstd{(}\hlkwc{mode} \hlstd{=} \hlstr{"list"}\hlstd{,} \hlkwc{length} \hlstd{=} \hlkwd{length}\hlstd{(sbjVec))}
+  \hlkwd{names}\hlstd{(lst)} \hlkwb{<-} \hlstd{sbjVec}
+  \hlkwa{for} \hlstd{(s} \hlkwa{in} \hlstd{sbjVec) \{}
+    \hlstd{lst[[s]]} \hlkwb{<-} \hlkwd{copy}\hlstd{(int)}
+    \hlstd{lst[[s]][ , subject} \hlkwb{:=} \hlstd{s]}
+  \hlstd{\}}
+  \hlkwd{rbindlist}\hlstd{(lst)}
+\hlstd{\}}
+\hlstd{wgsAgl} \hlkwb{<-} \hlkwd{xpandInt}\hlstd{(intAgl, wgs[ ,} \hlkwd{unique}\hlstd{(subject)])}
+\hlkwd{setkeyv}\hlstd{(wgsAgl,} \hlkwd{key}\hlstd{(wgs))}
+\hlstd{wgs} \hlkwb{<-} \hlstd{wgs[wgsAgl]}
+\hlkwd{rm}\hlstd{(wgsAgl)}
+\hlstd{wgs} \hlkwb{<-} \hlstd{wgs[}\hlopt{!}\hlstd{(rlcr),}
+           \hlkwd{.}\hlstd{(}\hlkwc{mcDup} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(passFilter)} \hlopt{&} \hlstd{CN} \hlopt{>} \hlnum{1}\hlstd{,}
+             \hlkwc{edDup} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(type)} \hlopt{&} \hlstd{type} \hlopt{==} \hlstr{"duplication"}\hlstd{,}
+             \hlkwc{wgDup} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(erds)} \hlopt{& !}\hlkwd{is.na}\hlstd{(cnvpytor)} \hlopt{&} \hlstd{erds} \hlopt{==} \hlstr{"dup"}\hlstd{,}
+             \hlkwc{mcDel} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(passFilter)} \hlopt{&} \hlstd{CN} \hlopt{<} \hlnum{1}\hlstd{,}
+             \hlkwc{edDel} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(type)} \hlopt{&} \hlstd{type} \hlopt{==} \hlstr{"deletion"}\hlstd{,}
+             \hlkwc{wgDel} \hlstd{=} \hlopt{!}\hlkwd{is.na}\hlstd{(erds)} \hlopt{& !}\hlkwd{is.na}\hlstd{(cnvpytor)} \hlopt{&} \hlstd{erds} \hlopt{==} \hlstr{"del"}\hlstd{),}
+           \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(subject, seqnames, start, end)]}
+\hlstd{wgs[ , mc} \hlkwb{:=} \hlstd{mcDup} \hlopt{|} \hlstd{mcDel]}
+\hlstd{wgs[ , ed} \hlkwb{:=} \hlstd{edDup} \hlopt{|} \hlstd{edDel]}
+\hlstd{wgs[ , wg} \hlkwb{:=} \hlstd{wgDup} \hlopt{|} \hlstd{wgDel]}
+\hlkwd{setcolorder}\hlstd{(wgs,} \hlkwd{c}\hlstd{(}\hlkwd{key}\hlstd{(wgs),} \hlstr{'mc'}\hlstd{,} \hlstr{'ed'}\hlstd{,} \hlstr{'wg'}\hlstd{))}
+\hlstd{wgsCallBySbj} \hlkwb{<-} \hlstd{wgs[ ,} \hlkwd{lapply}\hlstd{(.SD, sum),} \hlkwc{.SDcols} \hlstd{= is.logical,} \hlkwc{by} \hlstd{= subject]}
+\hlkwd{saveRDS}\hlstd{(wgsCallBySbj,} \hlstr{"data/wgsCallBySbj.rds"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\input{tables/wgsCallBySbj.tex}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pmLst} \hlkwb{<-} \hlkwd{list}\hlstd{()}
+\hlstd{pmLst}\hlopt{$}\hlstd{mc} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(mc, wg))}
+\hlstd{pmLst}\hlopt{$}\hlstd{ed} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(ed, wg))}
+\hlstd{pmLst}\hlopt{$}\hlstd{mcSub} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],} \hlkwd{evalPred}\hlstd{(mc, wg))}
+\hlstd{pmLst}\hlopt{$}\hlstd{edSub} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],} \hlkwd{evalPred}\hlstd{(ed, wg))}
+\hlstd{pmLst}\hlopt{$}\hlstd{mcDup} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(mcDup, wgDup))}
+\hlstd{pmLst}\hlopt{$}\hlstd{edDup} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(edDup, wgDup))}
+\hlstd{pmLst}\hlopt{$}\hlstd{mcSubDup} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],}
+                       \hlkwd{evalPred}\hlstd{(mcDup, wgDup))}
+\hlstd{pmLst}\hlopt{$}\hlstd{edSubDup} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],}
+                       \hlkwd{evalPred}\hlstd{(edDup, wgDup))}
+\hlstd{pmLst}\hlopt{$}\hlstd{mcDel} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(mcDel, wgDel))}
+\hlstd{pmLst}\hlopt{$}\hlstd{edDel} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs,} \hlkwd{evalPred}\hlstd{(edDel, wgDel))}
+\hlstd{pmLst}\hlopt{$}\hlstd{mcSubDel} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],}
+                       \hlkwd{evalPred}\hlstd{(mcDel, wgDel))}
+\hlstd{pmLst}\hlopt{$}\hlstd{edSubDel} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],}
+                       \hlkwd{evalPred}\hlstd{(edDel, wgDel))}
+\hlstd{predMetrics} \hlkwb{<-} \hlkwd{as.data.table}\hlstd{(}\hlkwd{do.call}\hlstd{(rbind, pmLst),} \hlkwc{keep.rownames} \hlstd{=} \hlstr{"PredSet"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\input{tables/predMetrics.tex}
+
+
+
+\newpage
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{ctsAll} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[ ,} \hlkwd{.}\hlstd{(mc, ed, wg)])}
+\hlstd{ctsSub} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject),} \hlkwd{.}\hlstd{(mc, ed, wg)])}
+\hlstd{ctsAllDup} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[ ,} \hlkwd{.}\hlstd{(mcDup, edDup, wgDup)])}
+\hlstd{ctsSubDup} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject),} \hlkwd{.}\hlstd{(mcDup, edDup, wgDup)])}
+\hlstd{ctsAllDel} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[ ,} \hlkwd{.}\hlstd{(mcDel, edDel, wgDel)])}
+\hlstd{ctsSubDel} \hlkwb{<-} \hlkwd{euler}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject),} \hlkwd{.}\hlstd{(mcDel, edDel, wgDel)])}
+\hlkwd{eulerr_options}\hlstd{(}\hlkwc{fills} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{fill} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"#E9E9E9"}\hlstd{,} \hlstr{"#7F7FC4"}\hlstd{,} \hlstr{"#FFC57F"}\hlstd{)),}
+               \hlkwc{quantities} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{cex} \hlstd{=} \hlnum{0.5}\hlstd{))}
+\hlstd{gridFigLab} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{lab}\hlstd{) \{}
+  \hlkwd{grid.text}\hlstd{(lab,} \hlkwc{x} \hlstd{=} \hlnum{0}\hlstd{,} \hlkwc{y} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{hjust} \hlstd{=} \hlnum{0}\hlstd{,} \hlkwc{vjust} \hlstd{=} \hlnum{1}\hlstd{,} \hlkwc{gp} \hlstd{=} \hlkwd{gpar}\hlstd{(}\hlkwc{font} \hlstd{=} \hlnum{2}\hlstd{))}
+\hlstd{\}}
+\hlkwd{plot}\hlstd{(ctsSubDup,} \hlkwc{quantities} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{""}\hlstd{)}
+\hlkwd{gridFigLab}\hlstd{(}\hlstr{"A"}\hlstd{)}
+\hlkwd{grid.text}\hlstd{(}\hlstr{"DUPLICATIONS"}\hlstd{,} \hlkwc{x} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{y} \hlstd{=} \hlnum{0.9}\hlstd{)}
+\hlkwd{plot}\hlstd{(ctsSubDel,} \hlkwc{quantities} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{""}\hlstd{)}
+\hlkwd{gridFigLab}\hlstd{(}\hlstr{"B"}\hlstd{)}
+\hlkwd{grid.text}\hlstd{(}\hlstr{"DELETIONS"}\hlstd{,} \hlkwc{x} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{y} \hlstd{=} \hlnum{0.9}\hlstd{)}
+\hlkwd{plot}\hlstd{(ctsAllDup,} \hlkwc{quantities} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{""}\hlstd{)}
+\hlkwd{gridFigLab}\hlstd{(}\hlstr{"C"}\hlstd{)}
+\hlkwd{grid.text}\hlstd{(}\hlstr{"DUPLICATIONS"}\hlstd{,} \hlkwc{x} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{y} \hlstd{=} \hlnum{0.9}\hlstd{)}
+\hlkwd{plot}\hlstd{(ctsAllDel,} \hlkwc{quantities} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{labels} \hlstd{=} \hlnum{FALSE}\hlstd{,} \hlkwc{main} \hlstd{=} \hlstr{""}\hlstd{)}
+\hlkwd{gridFigLab}\hlstd{(}\hlstr{"D"}\hlstd{)}
+\hlkwd{grid.text}\hlstd{(}\hlstr{"DELETIONS"}\hlstd{,} \hlkwc{x} \hlstd{=} \hlnum{0.5}\hlstd{,} \hlkwc{y} \hlstd{=} \hlnum{0.9}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}
+  \centering
+  \includegraphics[]{figures/vennDiag-1.pdf}%
+  \includegraphics[]{figures/vennDiag-2.pdf}
+  \includegraphics[]{figures/vennDiag-3.pdf}%
+  \includegraphics[]{figures/vennDiag-4.pdf}
+  \caption{(A-B) included in manuscript; (C-D) show the concordance of duplications and deletions for the whole WGS pool. mcCNV calls in gray; ExomeDepth calls in blue; ERDS/cnvpytor calls in orange.}
+\end{figure}
+
+\section{Slurm scripts to perform simulation study}
+
+\subsection{Create count objects}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{##----------------------------------------------------------------------------##}
+\hlcom{## Script to create the varDepth simulated counts}
+\hlcom{##----------------------------------------------------------------------------##}
+
+\hlkwd{library}\hlstd{(mcCNV)}
+\hlkwd{library}\hlstd{(rslurm)}
+\hlkwd{library}\hlstd{(data.table)}
+\hlkwd{library}\hlstd{(filer2020A)}
+
+\hlcom{## Directory for storing the data}
+\hlstd{wd} \hlkwb{<-} \hlkwd{getwd}\hlstd{()}
+
+\hlkwd{data}\hlstd{(subjectMeta)}
+\hlstd{pl1Int} \hlkwb{<-} \hlkwd{subsetCounts}\hlstd{(subjectMeta[pool} \hlopt{==} \hlstr{"Pool1"}\hlstd{, subject])}
+\hlstd{pl1Int} \hlkwb{<-} \hlstd{pl1Int[ ,} \hlkwd{.}\hlstd{(}\hlkwc{ttl} \hlstd{=} \hlkwd{sum}\hlstd{(molCount)),} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(seqnames, start, end)]}
+\hlstd{pl1Int[ , captureProb} \hlkwb{:=} \hlstd{ttl}\hlopt{/}\hlkwd{sum}\hlstd{(ttl)]}
+\hlstd{pl1Int[ , ttl} \hlkwb{:=} \hlkwa{NULL}\hlstd{]}
+
+\hlstd{deps} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{seq}\hlstd{(}\hlnum{5}\hlstd{,} \hlnum{100}\hlstd{,} \hlnum{5}\hlstd{))} \hlcom{## Sequencing depths}
+
+\hlcom{## Set up the file system}
+\hlstd{odir} \hlkwb{<-} \hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthCounts"}\hlstd{)}
+\hlkwa{if} \hlstd{(}\hlkwd{dir.exists}\hlstd{(odir))} \hlkwd{unlink}\hlstd{(odir,} \hlkwc{recursive} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{force} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{dir.create}\hlstd{(odir)}
+
+\hlstd{pars} \hlkwb{<-} \hlkwd{data.table}\hlstd{(}\hlkwd{expand.grid}\hlstd{(}\hlkwc{dep} \hlstd{= deps,} \hlkwc{rep} \hlstd{=} \hlkwd{seq}\hlstd{(}\hlnum{200}\hlstd{)))}
+\hlkwd{set.seed}\hlstd{(}\hlnum{1234}\hlstd{)}
+\hlstd{pars[ , seed} \hlkwb{:=} \hlkwd{sample}\hlstd{(}\hlnum{1e6}\hlstd{, .N)]}
+\hlstd{pars[ , odir} \hlkwb{:=} \hlstd{odir]}
+
+\hlstd{simPool} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{dep}\hlstd{,} \hlkwc{rep}\hlstd{,} \hlkwc{seed}\hlstd{,} \hlkwc{odir}\hlstd{) \{}
+  \hlstd{wndw} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{c}\hlstd{(dep} \hlopt{-} \hlnum{0.3}\hlopt{*}\hlstd{dep, dep} \hlopt{+} \hlnum{0.3}\hlopt{*}\hlstd{dep)}\hlopt{*}\hlnum{1e6}\hlstd{)}
+  \hlstd{cnt} \hlkwb{<-} \hlkwd{try}\hlstd{(}\hlkwd{cnvSimPool}\hlstd{(}\hlkwc{nSubjects} \hlstd{=} \hlnum{16L}\hlstd{,}
+                        \hlkwc{countRange} \hlstd{= wndw,}
+                        \hlkwc{interval} \hlstd{= pl1Int,}
+                        \hlkwc{seed} \hlstd{= seed,}
+                        \hlkwc{variantWidth} \hlstd{=} \hlnum{1L}\hlstd{))}
+  \hlstd{fname} \hlkwb{<-} \hlkwd{sprintf}\hlstd{(}\hlstr{"varDepth_d%0.3d_r%0.4d.counts"}\hlstd{, dep, rep)}
+  \hlkwd{saveRDS}\hlstd{(cnt,} \hlkwc{file} \hlstd{=} \hlkwd{file.path}\hlstd{(odir, fname))}
+  \hlopt{!}\hlkwd{is}\hlstd{(cnt,} \hlstr{'try-error'}\hlstd{)}
+\hlstd{\}}
+
+\hlkwd{slurm_apply}\hlstd{(}\hlkwc{f} \hlstd{= simPool,}
+            \hlkwc{add_objects} \hlstd{=} \hlstr{"pl1Int"}\hlstd{,}
+            \hlkwc{params} \hlstd{= pars,}
+            \hlkwc{nodes} \hlstd{=} \hlkwd{nrow}\hlstd{(pars),}
+            \hlkwc{cpus_per_node} \hlstd{=} \hlnum{1}\hlstd{,}
+            \hlkwc{jobname} \hlstd{=} \hlstr{"varDepthCounts"}\hlstd{,}
+            \hlkwc{slurm_options} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{mem} \hlstd{=} \hlnum{8000}\hlstd{,}
+                                 \hlkwc{array} \hlstd{=} \hlkwd{sprintf}\hlstd{(}\hlstr{"0-%d%%%d"}\hlstd{,}
+                                                 \hlkwd{nrow}\hlstd{(pars)} \hlopt{-} \hlnum{1}\hlstd{,}
+                                                 \hlnum{1000}\hlstd{),}
+                                 \hlstr{'cpus-per-task'} \hlstd{=} \hlnum{1}\hlstd{,}
+                                 \hlkwc{error} \hlstd{=}  \hlstr{"%A_%a.err"}\hlstd{,}
+                                 \hlkwc{output} \hlstd{=} \hlstr{"%A_%a.out"}\hlstd{,}
+                                 \hlkwc{time} \hlstd{=} \hlstr{"2-00:00:00"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Run mcCNV on count objects}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{##----------------------------------------------------------------------------##}
+\hlcom{## Script to perform mcCNV algorithm on varDepth simulation}
+\hlcom{##----------------------------------------------------------------------------##}
+
+\hlkwd{library}\hlstd{(mcCNV)}
+\hlkwd{library}\hlstd{(rslurm)}
+\hlkwd{library}\hlstd{(data.table)}
+\hlkwd{library}\hlstd{(stringr)}
+\hlkwd{library}\hlstd{(filer2020A)}
+
+\hlcom{## Directory for storing the data}
+\hlstd{wd} \hlkwb{<-} \hlkwd{getwd}\hlstd{()}
+
+\hlstd{pars} \hlkwb{<-} \hlkwd{data.table}\hlstd{(}\hlkwc{fl} \hlstd{=} \hlkwd{Sys.glob}\hlstd{(}\hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthCounts/*.counts"}\hlstd{)))}
+\hlstd{pars[ , dep} \hlkwb{:=} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"d"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(fl,} \hlstr{"d[0-9]\{3\}"}\hlstd{)))]}
+\hlcom{## Set up the file system}
+\hlstd{odir} \hlkwb{<-} \hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthMcCalls"}\hlstd{)}
+\hlkwa{if} \hlstd{(}\hlkwd{dir.exists}\hlstd{(odir))} \hlkwd{unlink}\hlstd{(odir,} \hlkwc{recursive} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{force} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{dir.create}\hlstd{(odir)}
+
+\hlstd{pars[ , odir} \hlkwb{:=} \hlstd{odir]}
+
+\hlstd{doCalc} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fl}\hlstd{,} \hlkwc{dep}\hlstd{,} \hlkwc{odir}\hlstd{) \{}
+  \hlstd{dat} \hlkwb{<-} \hlkwd{readRDS}\hlstd{(fl)}
+  \hlcom{## Setup output}
+  \hlstd{ifl} \hlkwb{<-} \hlkwd{basename}\hlstd{(fl)}
+  \hlstd{rep} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"r"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(ifl,} \hlstr{"r[0-9]\{4\}"}\hlstd{)))}
+  \hlstd{ofmt} \hlkwb{<-} \hlkwd{sub}\hlstd{(}\hlstr{".counts$"}\hlstd{,} \hlstr{".mcCallSummary"}\hlstd{, ifl)}
+  \hlstd{mcFl} \hlkwb{<-} \hlkwd{file.path}\hlstd{(odir, ofmt)}
+  \hlcom{## mcCNV calls}
+  \hlstd{mcCalls} \hlkwb{<-} \hlkwd{try}\hlstd{(}\hlkwd{cnvCallCN}\hlstd{(}\hlkwc{counts} \hlstd{= dat,} \hlkwc{verbose} \hlstd{=} \hlnum{TRUE}\hlstd{))}
+  \hlstd{mcFail} \hlkwb{<-} \hlkwd{is}\hlstd{(mcCalls,} \hlstr{'try-error'}\hlstd{)}
+  \hlkwa{if} \hlstd{(}\hlopt{!}\hlstd{mcFail) \{}
+    \hlstd{mcRes} \hlkwb{<-} \hlstd{mcCalls[ , .N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(actCN, CN, passFilter)]}
+    \hlstd{mcRes[ , dep} \hlkwb{:=} \hlstd{dep]}
+    \hlstd{mcRes[ , rep} \hlkwb{:=} \hlstd{rep]}
+    \hlkwd{saveRDS}\hlstd{(mcRes,} \hlkwc{file} \hlstd{= mcFl)}
+  \hlstd{\}}
+  \hlopt{!}\hlstd{mcFail}
+\hlstd{\}}
+
+\hlkwd{slurm_apply}\hlstd{(}\hlkwc{f} \hlstd{= doCalc,}
+            \hlkwc{params} \hlstd{= pars,}
+            \hlkwc{nodes} \hlstd{=} \hlkwd{nrow}\hlstd{(pars),}
+            \hlkwc{cpus_per_node} \hlstd{=} \hlnum{1}\hlstd{,}
+            \hlkwc{jobname} \hlstd{=} \hlstr{"varDepthMcCalls"}\hlstd{,}
+            \hlkwc{slurm_options} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{mem} \hlstd{=} \hlnum{12000}\hlstd{,}
+                                 \hlkwc{array} \hlstd{=} \hlkwd{sprintf}\hlstd{(}\hlstr{"0-%d%%%d"}\hlstd{,}
+                                                 \hlkwd{nrow}\hlstd{(pars)} \hlopt{-} \hlnum{1}\hlstd{,}
+                                                 \hlnum{1000}\hlstd{),}
+                                 \hlstr{'cpus-per-task'} \hlstd{=} \hlnum{1}\hlstd{,}
+                                 \hlkwc{error} \hlstd{=}  \hlstr{"%A_%a.err"}\hlstd{,}
+                                 \hlkwc{output} \hlstd{=} \hlstr{"%A_%a.out"}\hlstd{,}
+                                 \hlkwc{time} \hlstd{=} \hlstr{"10-00:00:00"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Run ExomeDepth with default parameters on count objects}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{##----------------------------------------------------------------------------##}
+\hlcom{## Script to perform ExomeDepth algorithm w/ defaults on varDepth simulation}
+\hlcom{##----------------------------------------------------------------------------##}
+
+\hlkwd{library}\hlstd{(mcCNV)}
+\hlkwd{library}\hlstd{(rslurm)}
+\hlkwd{library}\hlstd{(data.table)}
+\hlkwd{library}\hlstd{(stringr)}
+\hlkwd{library}\hlstd{(filer2020A)}
+
+\hlcom{## Directory for storing the data}
+\hlstd{wd} \hlkwb{<-} \hlkwd{getwd}\hlstd{()}
+
+\hlstd{pars} \hlkwb{<-} \hlkwd{data.table}\hlstd{(}\hlkwc{fl} \hlstd{=} \hlkwd{Sys.glob}\hlstd{(}\hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthCounts/*.counts"}\hlstd{)))}
+\hlstd{pars[ , dep} \hlkwb{:=} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"d"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(fl,} \hlstr{"d[0-9]\{3\}"}\hlstd{)))]}
+\hlcom{## Set up the file system}
+\hlstd{odir} \hlkwb{<-} \hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthEdDefaultCalls"}\hlstd{)}
+\hlkwa{if} \hlstd{(}\hlkwd{dir.exists}\hlstd{(odir))} \hlkwd{unlink}\hlstd{(odir,} \hlkwc{recursive} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{force} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{dir.create}\hlstd{(odir)}
+
+\hlstd{pars[ , odir} \hlkwb{:=} \hlstd{odir]}
+
+\hlstd{doCalc} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fl}\hlstd{,} \hlkwc{dep}\hlstd{,} \hlkwc{odir}\hlstd{) \{}
+  \hlstd{dat} \hlkwb{<-} \hlkwd{readRDS}\hlstd{(fl)}
+  \hlcom{## Setup output}
+  \hlstd{ifl} \hlkwb{<-} \hlkwd{basename}\hlstd{(fl)}
+  \hlstd{rep} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"r"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(ifl,} \hlstr{"r[0-9]\{4\}"}\hlstd{)))}
+  \hlstd{ofmt} \hlkwb{<-} \hlkwd{sub}\hlstd{(}\hlstr{".counts$"}\hlstd{,} \hlstr{".edDefaultCallSummary"}\hlstd{, ifl)}
+  \hlstd{edFl} \hlkwb{<-} \hlkwd{file.path}\hlstd{(odir, ofmt)}
+  \hlcom{## ExomeDepth calls}
+  \hlstd{edCalls} \hlkwb{<-} \hlkwd{try}\hlstd{(}\hlkwd{runExomeDepth}\hlstd{(}\hlkwc{counts} \hlstd{= dat))}
+  \hlstd{edFail} \hlkwb{<-} \hlkwd{is}\hlstd{(edCalls,} \hlstr{'try-error'}\hlstd{)}
+  \hlkwa{if} \hlstd{(}\hlopt{!}\hlstd{edFail) \{}
+    \hlkwd{setkey}\hlstd{(edCalls}\hlopt{$}\hlstd{calls, subject, seqnames, start, end)}
+    \hlkwd{setkey}\hlstd{(dat, subject, seqnames, start, end)}
+    \hlstd{edRes} \hlkwb{<-} \hlstd{edCalls}\hlopt{$}\hlstd{calls[dat][ , .N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(actCN, type)]}
+    \hlstd{edRes[ , dep} \hlkwb{:=} \hlstd{dep]}
+    \hlstd{edRes[ , rep} \hlkwb{:=} \hlstd{rep]}
+    \hlkwd{saveRDS}\hlstd{(edRes,} \hlkwc{file} \hlstd{= edFl)}
+  \hlstd{\}}
+  \hlopt{!}\hlstd{edFail}
+\hlstd{\}}
+
+\hlkwd{slurm_apply}\hlstd{(}\hlkwc{f} \hlstd{= doCalc,}
+            \hlkwc{params} \hlstd{= pars,}
+            \hlkwc{nodes} \hlstd{=} \hlkwd{nrow}\hlstd{(pars),}
+            \hlkwc{cpus_per_node} \hlstd{=} \hlnum{1}\hlstd{,}
+            \hlkwc{jobname} \hlstd{=} \hlstr{"varDepthEdDefaultCalls"}\hlstd{,}
+            \hlkwc{slurm_options} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{mem} \hlstd{=} \hlnum{12000}\hlstd{,}
+                                 \hlkwc{array} \hlstd{=} \hlkwd{sprintf}\hlstd{(}\hlstr{"0-%d%%%d"}\hlstd{,}
+                                                 \hlkwd{nrow}\hlstd{(pars)} \hlopt{-} \hlnum{1}\hlstd{,}
+                                                 \hlnum{1000}\hlstd{),}
+                                 \hlstr{'cpus-per-task'} \hlstd{=} \hlnum{1}\hlstd{,}
+                                 \hlkwc{error} \hlstd{=}  \hlstr{"%A_%a.err"}\hlstd{,}
+                                 \hlkwc{output} \hlstd{=} \hlstr{"%A_%a.out"}\hlstd{,}
+                                 \hlkwc{time} \hlstd{=} \hlstr{"10-00:00:00"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\subsection{Run ExomeDepth with simulation-matched parameters on count objects}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{##----------------------------------------------------------------------------##}
+\hlcom{## Script to perform ExomeDepth algorithm w/ best pars on varDepth simulation}
+\hlcom{##----------------------------------------------------------------------------##}
+
+\hlkwd{library}\hlstd{(mcCNV)}
+\hlkwd{library}\hlstd{(rslurm)}
+\hlkwd{library}\hlstd{(data.table)}
+\hlkwd{library}\hlstd{(stringr)}
+\hlkwd{library}\hlstd{(filer2020A)}
+
+\hlcom{## Directory for storing the data}
+\hlstd{wd} \hlkwb{<-} \hlkwd{getwd}\hlstd{()}
+
+\hlstd{pars} \hlkwb{<-} \hlkwd{data.table}\hlstd{(}\hlkwc{fl} \hlstd{=} \hlkwd{Sys.glob}\hlstd{(}\hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthCounts/*.counts"}\hlstd{)))}
+\hlstd{pars[ , dep} \hlkwb{:=} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"d"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(fl,} \hlstr{"d[0-9]\{3\}"}\hlstd{)))]}
+\hlcom{## Set up the file system}
+\hlstd{odir} \hlkwb{<-} \hlkwd{file.path}\hlstd{(wd,} \hlstr{"varDepthEdBestCalls"}\hlstd{)}
+\hlkwa{if} \hlstd{(}\hlkwd{dir.exists}\hlstd{(odir))} \hlkwd{unlink}\hlstd{(odir,} \hlkwc{recursive} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{force} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{dir.create}\hlstd{(odir)}
+
+\hlstd{pars[ , odir} \hlkwb{:=} \hlstd{odir]}
+
+\hlstd{doCalc} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{fl}\hlstd{,} \hlkwc{dep}\hlstd{,} \hlkwc{odir}\hlstd{) \{}
+  \hlstd{dat} \hlkwb{<-} \hlkwd{readRDS}\hlstd{(fl)}
+  \hlcom{## Setup output}
+  \hlstd{ifl} \hlkwb{<-} \hlkwd{basename}\hlstd{(fl)}
+  \hlstd{rep} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{sub}\hlstd{(}\hlstr{"r"}\hlstd{,} \hlstr{""}\hlstd{,} \hlkwd{str_extract}\hlstd{(ifl,} \hlstr{"r[0-9]\{4\}"}\hlstd{)))}
+  \hlstd{ofmt} \hlkwb{<-} \hlkwd{sub}\hlstd{(}\hlstr{".counts$"}\hlstd{,} \hlstr{".edBestCallSummary"}\hlstd{, ifl)}
+  \hlstd{edFl} \hlkwb{<-} \hlkwd{file.path}\hlstd{(odir, ofmt)}
+  \hlcom{## ExomeDepth calls}
+  \hlstd{edCalls} \hlkwb{<-} \hlkwd{try}\hlstd{(}\hlkwd{runExomeDepth}\hlstd{(}\hlkwc{counts} \hlstd{= dat,}
+                               \hlkwc{transProb} \hlstd{=} \hlnum{0.001}\hlstd{,}
+                               \hlkwc{cnvLength} \hlstd{=} \hlnum{1000}\hlstd{))}
+  \hlstd{edFail} \hlkwb{<-} \hlkwd{is}\hlstd{(edCalls,} \hlstr{'try-error'}\hlstd{)}
+  \hlkwa{if} \hlstd{(}\hlopt{!}\hlstd{edFail) \{}
+    \hlkwd{setkey}\hlstd{(edCalls}\hlopt{$}\hlstd{calls, subject, seqnames, start, end)}
+    \hlkwd{setkey}\hlstd{(dat, subject, seqnames, start, end)}
+    \hlstd{edRes} \hlkwb{<-} \hlstd{edCalls}\hlopt{$}\hlstd{calls[dat][ , .N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(actCN, type)]}
+    \hlstd{edRes[ , dep} \hlkwb{:=} \hlstd{dep]}
+    \hlstd{edRes[ , rep} \hlkwb{:=} \hlstd{rep]}
+    \hlkwd{saveRDS}\hlstd{(edRes,} \hlkwc{file} \hlstd{= edFl)}
+  \hlstd{\}}
+  \hlopt{!}\hlstd{edFail}
+\hlstd{\}}
+
+\hlkwd{slurm_apply}\hlstd{(}\hlkwc{f} \hlstd{= doCalc,}
+            \hlkwc{params} \hlstd{= pars,}
+            \hlkwc{nodes} \hlstd{=} \hlkwd{nrow}\hlstd{(pars),}
+            \hlkwc{cpus_per_node} \hlstd{=} \hlnum{1}\hlstd{,}
+            \hlkwc{jobname} \hlstd{=} \hlstr{"varDepthEdBestCalls"}\hlstd{,}
+            \hlkwc{slurm_options} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{mem} \hlstd{=} \hlnum{12000}\hlstd{,}
+                                 \hlkwc{array} \hlstd{=} \hlkwd{sprintf}\hlstd{(}\hlstr{"0-%d%%%d"}\hlstd{,}
+                                                 \hlkwd{nrow}\hlstd{(pars)} \hlopt{-} \hlnum{1}\hlstd{,}
+                                                 \hlnum{1000}\hlstd{),}
+                                 \hlstr{'cpus-per-task'} \hlstd{=} \hlnum{1}\hlstd{,}
+                                 \hlkwc{error} \hlstd{=}  \hlstr{"%A_%a.err"}\hlstd{,}
+                                 \hlkwc{output} \hlstd{=} \hlstr{"%A_%a.out"}\hlstd{,}
+                                 \hlkwc{time} \hlstd{=} \hlstr{"10-00:00:00"}\hlstd{))}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\section{Snakemake notes}
+
+For the Snakemake files to run, the files must be organized into a specific directory structure.
+Within the exome analysis directory, pools are identified by the following structure:
+
+\begin{quote}
+\texttt{poolName/inputs/sampleName/laneID/R1.fastq.gz} \newline
+\texttt{poolName/inputs/sampleName/laneID/R2.fastq.gz}
+\end{quote}
+
+Runs within the same `sampleName' will be merged into a single BAM file.
+For example, the following shows the files for the NCG\_00790 sample within the WGS pool.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# WGS/inputs/NCG_00790/}
+\hlcom{# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L001}
+\hlcom{#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R1_001.fastq.gz}
+\hlcom{#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R2_001.fastq.gz}
+\hlcom{# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L002}
+\hlcom{#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R1_001.fastq.gz}
+\hlcom{#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R2_001.fastq.gz}
+\hlcom{# ├── 190522_UNC41-A00434_0034_AHKL7YDSXX-GATGAATC_S6_L003}
+\hlcom{#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L003_R1_001.fastq.gz}
+\hlcom{#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L003_R2_001.fastq.gz}
+\hlcom{# ├── 190830_UNC41-A00434_0050_AHCLVLDRXX-GATGAATC_S6_L001}
+\hlcom{#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R1_001.fastq.gz}
+\hlcom{#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L001_R2_001.fastq.gz}
+\hlcom{# └── 190830_UNC41-A00434_0050_AHCLVLDRXX-GATGAATC_S6_L002}
+\hlcom{#     ├── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R1_001.fastq.gz}
+\hlcom{#     └── NCG_00790-CNV_Exome_XT2_GATGAATC_S6_L002_R2_001.fastq.gz}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+The genome file follows the same convention, but simply requires \texttt{inputs} and samples are not subdivided by pool.
+
+The provided config and cluster files will need to be updated to match the cluster envrionment used; they are provided as were used as a guide.
+The following shows a paired-down directory structure for the exome analysis; note the symlink to `target.intervals' within the pool folder.
+The `target.intervals' file should point to a .RDS object with a valid mcCNV interval object (see \texttt{?mcCNV::cnvValidInterval}).
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# wesAnalysis/}
+\hlcom{# ├── cluster.json}
+\hlcom{# ├── config.yaml}
+\hlcom{# ├── envs}
+\hlcom{#     └── mcCNV.yaml}
+\hlcom{# ├── runme.snakemake}
+\hlcom{# ├── scratch}
+\hlcom{# ├── scripts}
+\hlcom{#     ├── aggCalls.R}
+\hlcom{#     ├── callCN.R}
+\hlcom{#     ├── exomeDepth.R}
+\hlcom{#     └── getCounts.R}
+\hlcom{# ├── Snakefile}
+\hlcom{# ├── slurmOut}
+\hlcom{# └── WGS}
+\hlcom{#     ├── inputs}
+\hlcom{#     └── target.intervals -> path to interval .RDS object}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+For the genome analysis, ERDS will have to be installed manually prior to running the pipeline.
+We used the following shell script, but have zero expecations it will work within all environments.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+#!/bin/sh
+TOOLDIR=$(pwd)/tools
+BINDIR=${TOOLDIR}/bin
+ERDS=7f47b69943e254e5ff5a21c7ab8915e9a4da568a
+
+mkdir -p ${BINDIR}
+
+wget "https://github.com/igm-team/ERDS/archive/${ERDS}.zip" -O "${TOOLDIR}/ERDS-${ERDS}.zip"
+unzip ${TOOLDIR}/ERDS-${ERDS}.zip -d ${TOOLDIR}
+
+pushd ${TOOLDIR}/ERDS-${ERDS}/erds_tcag/src/phmm; make; popd
+pushd ${TOOLDIR}/ERDS-${ERDS}/erds_tcag/src/hmm; make; popd
+pushd ${TOOLDIR}/ERDS-${ERDS}/erds_tcag/src; make; popd
+
+cat <<EOF >${BINDIR}/erds_pipeline
+#!/bin/bash
+set -eu -o pipefail
+export LC_ALL=en_US.UTF-8
+perl ${TOOLDIR}/ERDS-${ERDS}/erds_tcag/src/erds_pipeline.pl \$@
+EOF
+
+chmod +x ${BINDIR}/erds_pipeline
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\section{Snakemake file for exome anlaysis}
+
+Note, Snakemake file and all accessory files contained within the filer2020A package `inst' directory.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+configfile: "config.yaml"
+
+GLOB = glob_wildcards('{proj}/inputs/{sample}/{runId}/{fastqBase}.fastq.gz')
+SR = dict()
+for (p,s,r,f) in zip(*GLOB):
+   SR.setdefault(p, {}).setdefault(s, {}).setdefault(r, []).append(f)
+
+rule all:
+    input:
+        ["%s/fastqc/%s/%s/%s_fastq.zip"%row for row in zip(*GLOB)], 
+        ["%s/markdup/%s.markdup.bam.flagstat"%row for row in zip(*GLOB[0:2])],
+        ["%s/counts/%s.counts"%row for row in zip(*GLOB[0:2])], 
+        ["%s/markdup/%s.markdup.bam.summary.txt"%row for row in zip(*GLOB[0:2])],
+        ["%s/%s.copynumber"%row for row in zip(SR.keys(), SR.keys())],
+        ["%s/%s.exomeDepth"%row for row in zip(SR.keys(), SR.keys())],
+
+
+rule exomeDepth:
+    input:
+        lambda wildcards: 
+            expand('{proj}/counts/{sample}.counts', 
+                   proj = wildcards.proj, 
+                   sample = SR[wildcards.proj].keys()),
+    output: "{proj}/{proj}.exomeDepth"
+    log: "{proj}/logs/{proj}.exomeDepth.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[exomeDepth]} --transProb=0.0001 --cnvLength=50000 "
+        "--outfile={output} {input} &> {log}"
+
+rule callCN:
+    input:
+        lambda wildcards: 
+            expand('{proj}/counts/{sample}.counts', 
+                   proj = wildcards.proj, 
+                   sample = SR[wildcards.proj].keys()),
+    output: "{proj}/{proj}.copynumber"
+    log: "{proj}/logs/{proj}.copynumber.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[callCN]} --prior=0.2 --width=1 "
+        "--outfile={output} {input} &> {log}"
+
+rule getcounts:
+    input:
+        bamfile = "{proj}/markdup/{sample}.markdup.bam",
+        intfile = "{proj}/target.intervals"
+    output: "{proj}/counts/{sample}.counts"
+    log: "{proj}/logs/counts/{sample}.counts.log"
+    conda: "envs/mcCNV.yaml"
+    shell:
+        "{config[getCounts]} {input.bamfile} {input.intfile} {output} &> {log}"
+
+rule flagstat:
+    input: "{proj}/markdup/{sample}.markdup.bam"
+    output: "{proj}/markdup/{sample}.markdup.bam.flagstat"
+    wrapper: "0.61.0/bio/samtools/flagstat"
+
+rule alignmetrics:
+    input: 
+        bam = "{proj}/markdup/{sample}.markdup.bam",
+        ref = config['bwa_index']
+    output: "{proj}/markdup/{sample}.markdup.bam.summary.txt"
+    log: "{proj}/logs/picard/collectalignmentsummarymetrics/{sample}.log"
+    wrapper: "0.61.0/bio/picard/collectalignmentsummarymetrics"
+
+rule markdup:
+    input: "{proj}/merged/{sample}.bam"
+    output:
+        bam = "{proj}/markdup/{sample}.markdup.bam",
+        bai = "{proj}/markdup/{sample}.markdup.bai",
+        metrics = "{proj}/markdup/{sample}.markdup.metrics.txt"
+    log: "{proj}/logs/picard/markdup/{sample}.log"
+    params:
+        "REMOVE_DUPLICATES=false",
+        "CREATE_INDEX=true",
+        'TMP_DIR="%s"'%config['temp_dir']
+    wrapper: "0.61.0/bio/picard/markduplicates"
+
+rule merge:
+    input:
+        lambda wildcards: 
+            expand('{proj}/mapped/{sample}.{runId}.bam', 
+                   proj = wildcards.proj, 
+                   sample = wildcards.sample, 
+                   runId = SR[wildcards.proj][wildcards.sample])
+    output: bam = temp("{proj}/merged/{sample}.bam")
+    log: "{proj}/logs/picard/merged/{sample}.log"
+    params: "VALIDATION_STRINGENCY=LENIENT"
+    wrapper: "0.61.0/bio/picard/mergesamfiles"
+
+rule bwamem:
+    input:
+        reads = lambda wildcards: 
+            expand('{proj}/inputs/{sample}/{runId}/{fastq}.fastq.gz', 
+                   proj = wildcards.proj, 
+                   sample = wildcards.sample, 
+                   runId = wildcards.runId, 
+                   fastq = SR[wildcards.proj][wildcards.sample][wildcards.runId])
+    output: temp("{proj}/mapped/{sample}.{runId}.bam")
+    log: "{proj}/logs/bwa_mem/{sample}.{runId}.log"
+    params:
+        index = config['bwa_index'],
+        extra = r"-R '@RG\tID:{sample}_{runId}\tSM:{sample}\tPL:Illumina\tCN:UNC'",
+        sort = "picard",
+        sort_order = "coordinate",
+        sort_extra = 'TMP_DIR="%s"'%config['temp_dir']
+    threads: 8
+    wrapper: "0.61.0/bio/bwa/mem"
+
+rule fastqc:
+    input: "{proj}/inputs/{sample}/{runId}/{stem}.fastq.gz",
+    output:
+        html = "{proj}/fastqc/{sample}/{runId}/{stem}.html",
+        zip = "{proj}/fastqc/{sample}/{runId}/{stem}_fastq.zip"
+    params: ""
+    wrapper: "0.61.0/bio/fastqc"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\section{Snakemake file for genome anlaysis}
+
+Note, Snakemake file and all accessory files contained within the filer2020A package `inst' directory.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+configfile: "config.yaml"
+
+sampleRuns = dict()
+fastqs = []
+flagstats = []
+alignstats = []
+calls = []
+deps = []
+cnvpytor = []
+erds = []
+combine = []
+for (s,r,f) in zip(*glob_wildcards('inputs/{sample}/{runId}/{fastqBase}.fastq.gz')):
+    sampleRuns.setdefault(s, {}).setdefault(r, []).append(f)
+    fastqs.append('fastqc/%s/%s/%s_fastqc.zip'%(s,r,f))
+    flagstats.append('sorted/%s.sorted.markdup.bam.flagstat'%(s))
+    alignstats.append('sorted/%s.sorted.markdup.bam.alignMetrics'%(s))
+    calls.append('calls/%s.g.vcf'%(s))
+    deps.append('depths/%s.depth.quantile'%(s))
+    cnvpytor.append('cnvpytor/%s.pytor.calls'%(s))
+    erds.append('erds/%s/%s.events'%(s,s))
+    combine.append('combined/%s.cnvcalls'%(s))
+    
+rule all:
+    input:
+        fastqs,
+        flagstats,
+        alignstats,
+        calls,
+        deps,
+        cnvpytor,
+        erds,
+        combine,
+
+rule fastqc:
+    input:
+        "inputs/{sample}/{runId}/{stem}.fastq.gz"
+    output:
+        html="fastqc/{sample}/{runId}/{stem}.html",
+        zip="fastqc/{sample}/{runId}/{stem}_fastqc.zip"
+    params: ""
+    wrapper:
+        "0.49.0/bio/fastqc"
+
+rule bwamem:
+    input:
+        reads=lambda wildcards: 
+            expand('inputs/{sample}/{runId}/{stem}.fastq.gz',
+                   sample=wildcards.sample,
+                   runId=wildcards.runId,
+                   stem=sampleRuns[wildcards.sample][wildcards.runId])
+    output:
+        temp("mapped/{sample}.{runId}.bam")
+    log:
+        "logs/bwa_mem/{sample}.{runId}.log"
+    params:
+        index=config['bwa_index'],
+        extra=r"-R '@RG\tID:{sample}_{runId}\tSM:{sample}\tPL:Illumina\tCN:UNC'",
+        sort="picard",
+        sort_order="queryname",
+        sort_extra='TMP_DIR="%s"'%config['temp_dir']
+    threads: 8
+    wrapper:
+        "0.49.0/bio/bwa/mem"
+
+rule merge:
+    input: lambda wildcards: 
+            expand('mapped/{sample}.{runId}.bam',
+                   sample=wildcards.sample,
+                   runId=sampleRuns[wildcards.sample])
+    output: temp("merged/{sample}.bam")
+    params: "-n"
+    threads: 8
+    wrapper:
+        "0.49.0/bio/samtools/merge"
+
+rule markdup:
+    input:
+        "merged/{sample}.bam"
+    output:
+        bam = temp("markdup/{sample}.markdup.bam"),
+        metrics = "markdup/{sample}.markdup.markdupMetrics"
+    log:
+        "logs/picard/markdup/{sample}.log"
+    params:
+        "REMOVE_DUPLICATES=false",
+        "ASSUME_SORT_ORDER=queryname",
+        "CREATE_INDEX=false",
+        'TMP_DIR="%s"'%config['temp_dir']
+    wrapper:
+        "0.49.0/bio/picard/markduplicates"
+
+rule sort:
+    input: "markdup/{sample}.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam"
+    params: "-m 2G"
+    threads: 8
+    wrapper:
+        "0.49.0/bio/samtools/sort"
+
+rule index:
+    input: "sorted/{sample}.sorted.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam.bai"
+    wrapper:
+        "0.49.0/bio/samtools/index"
+
+rule stats:
+    input:
+        bam = "sorted/{sample}.sorted.markdup.bam",
+        ref = config['bwa_index'],
+	idx = "sorted/{sample}.sorted.markdup.bam.bai"
+    output:
+        "sorted/{sample}.sorted.markdup.bam.alignMetrics"
+    log:
+        "logs/picard/collectalignmentsummarymetrics/{sample}.log"
+    wrapper:
+        "0.49.0/bio/picard/collectalignmentsummarymetrics"
+
+rule samtools_depth:
+    input:
+        bams="sorted/{sample}.sorted.markdup.bam",
+    output: "depths/{sample}.depth"
+    params:
+        # optional bed file passed to -b
+        extra="" # optional additional parameters as string
+    wrapper:
+        "0.60.0/bio/samtools/depth"
+
+rule depthQuantile:
+    input: "depths/{sample}.depth"
+    output: "depths/{sample}.depth.quantile"
+    conda: "envs/R.yaml"
+    shell: "{config[depthQuantile]} {input} {output}"
+
+rule samtools_flagstat:
+    input: "sorted/{sample}.sorted.markdup.bam"
+    output: "sorted/{sample}.sorted.markdup.bam.flagstat"
+    wrapper:
+        "0.49.0/bio/samtools/flagstat"
+
+rule gatkBqsr:
+    input:
+        bam = "sorted/{sample}.sorted.markdup.bam",
+        ref = config['bwa_index'],
+        known = config['dbsnp']
+    output:
+        bam = "recal/{sample}.recal.bam"
+    log:
+        "logs/gatk/bqsr/{sample}.log"
+    params:
+        extra = "",  # optional
+        java_opts = "-Xmx20G -XX:ParallelGCThreads=8", # optional
+    threads: 8
+    wrapper:
+        "0.49.0/bio/gatk/baserecalibrator"
+
+rule haplotypeCaller:
+    input:
+        # single or list of bam files
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index']
+    output:
+        gvcf = "calls/{sample}.g.vcf",
+    log:
+        "logs/gatk/haplotypecaller/{sample}.log"
+    params:
+        extra = "",  # optional
+        java_opts = "-Xmx20G -XX:ParallelGCThreads=8", # optional
+    threads: 8
+    wrapper:
+        "0.49.0/bio/gatk/haplotypecaller"
+
+rule cnvpytor:
+    input:
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index']
+    output:
+        pytor = "cnvpytor/{sample}.pytor",
+        calls = "cnvpytor/{sample}.pytor.calls"
+    params:
+        binsize = 500
+    shell:
+        """
+        cnvpytor -root {output.pytor} -rd {input.bam} -T {input.ref}
+        cnvpytor -root {output.pytor} -his {params.binsize}
+        cnvpytor -root {output.pytor} -partition {params.binsize}
+        cnvpytor -root {output.pytor} -call {params.binsize} > {output.calls}
+        """
+
+rule erds:
+    input:
+        bam = "recal/{sample}.recal.bam",
+        ref = config['bwa_index'],
+        vcf = "calls/{sample}.g.vcf",
+    output: "erds/{sample}/{sample}.events"
+    params:
+        dr = "erds/{sample}"
+    conda: "envs/erds.yaml"
+    shell:
+        "{config[erds]} -o {params.dr} -b {input.bam} "
+        "-v {input.vcf} -r {input.ref}"
+
+rule combineCalls:
+    input: 
+        pytor = "cnvpytor/{sample}.pytor.calls", 
+        erds = "erds/{sample}/{sample}.events",
+        interval = "targets.intervals",
+    output: "combined/{sample}.cnvcalls"
+    conda: "envs/R.yaml"
+    shell: "{config[combineCalls]} {wildcards.sample} {input.pytor} {input.erds} "
+           "{input.interval} {output}"
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\end{document}

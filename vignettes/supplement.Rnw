@@ -38,7 +38,7 @@
 <<echo=FALSE,results='hide',warning=FALSE,message=FALSE>>=
 library(knitr)
 knit_theme$set("bclear")
-knitr::opts_chunk$set(fig.path = "figures/",
+knitr::opts_chunk$set(fig.path = "figures-",
                       dev = c("pdf", "png"),
                       dpi = 300,
                       fig.width = 3.38,
@@ -114,10 +114,10 @@ label(poolTbl) <- "tab:poolSummary"
 print(poolTbl,
       add.to.row = list(pos = as.list(mult - 1),
                         command = rep("\\rowcolor[gray]{0.9} ", length(mult))),
-      file = "tables/poolSummary.tex")
+      file = "tables-poolSummary.tex")
 @
 
-\input{tables/poolSummary.tex}
+\input{tables-poolSummary.tex}
 
 \newpage
 \section{Mean-variance relationship for multplexed versus independent capture}
@@ -306,10 +306,10 @@ label(simResTbl) <- "tab:simResTbl"
 print(simResTbl,
       hline.after = c(0, nrow(simResTbl)),
       add.to.row = list(pos = list(-1, -1), command = c("\\toprule ", tr)),
-      file = "tables/simResTbl.tex")
+      file = "tables-simResTbl.tex")
 @
 
-\input{tables/simResTbl.tex}
+\input{tables-simResTbl.tex}
 
 \newpage
 \section{Comparing calls on WGS pool}
@@ -358,10 +358,10 @@ label(wgsCallBySbj) <- "tab:wgsCallBySbj"
 print(wgsCallBySbj,
       hline.after = c(0, nrow(wgsCallBySbj)),
       add.to.row = list(pos = list(-1, -1), command = c("\\toprule ", tr)),
-      file = "tables/wgsCallBySbj.tex")
+      file = "tables-wgsCallBySbj.tex")
 @
 
-\input{tables/wgsCallBySbj.tex}
+\input{tables-wgsCallBySbj.tex}
 
 <<eval=FALSE>>=
 pmLst <- list()
@@ -411,10 +411,10 @@ print(predMetrics,
       add.to.row = list(pos = c(as.list(subRows - 1), 4, 8),
                         command = c(rep("\\rowcolor[gray]{0.9} ", length(subRows)),
                                     "\\midrule ", "\\midrule ")),
-      file = "tables/predMetrics.tex")
+      file = "tables-predMetrics.tex")
 @
 
-\input{tables/predMetrics.tex}
+\input{tables-predMetrics.tex}
 
 <<include=FALSE>>=
 wgs <- readRDS("../inst/noBuild/wgs.rds")

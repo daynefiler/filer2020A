@@ -1,4 +1,54 @@
-\documentclass{article}
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+% maxwidth is the original width if it is less than linewidth
+% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{geometry}
 \geometry{a4paper, margin=0.75in}
 \usepackage{amsmath,amsthm,amssymb}
@@ -28,18 +78,18 @@
 \author[1]{Alicia T Brandt}
 \author[1]{Christian R Tilley}
 \author[1]{Piotr A Mieczkowski}
-\author[1,2,3]{Kimberly Robasky}
+\author[2]{Kimberly Robasky}
 \author[2]{Chris Bizon}
 \author[2]{Jeffery L Tilson}
 \author[1,2]{Bradford C Powell}
 \author[1,2]{Darius M Bost}
 \author[1]{Clark D Jeffries}
+\author[1]{James P Evans}
 \author[1]{Jonathan S Berg}
-\author[1,2,4]{Kirk C Wilhelmsen}
+\author[1,2,3]{Kirk C Wilhelmsen}
 \affil[1]{UNC School of Medicine, Department of Genetics, Chapel Hill, NC}
 \affil[2]{Renaissance Computing Institute, Chapel Hill, NC}
-\affil[3]{UNC School of Information and Library Science, Chapel Hill, NC}
-\affil[4]{UNC School of Medicine, Department of Neurology, Chapel Hill, NC}
+\affil[3]{UNC School of Medicine, Department of Neurology, Chapel Hill, NC}
 \date{}
 
 %% Keep package name from getting hyphenated
@@ -47,20 +97,10 @@
 
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1ex}
-
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-<<echo=FALSE,results='hide',message=FALSE,error=FALSE,warning=FALSE>>=
-library(filer2020A)
-poolTbl <- readRDS("data/poolTbl.rds")
-data(subjectMeta)
-setkey(subjectMeta, subject)
-data(subjectCorr)
-setkey(subjectCorr, subject)
-subjectCorr <- subjectMeta[subjectCorr]
-wgsCallBySbj <- readRDS("data/wgsCallBySbj.rds")
-data(intAgl)
-@
+
 
 \maketitle
 
@@ -96,12 +136,12 @@ In human genetics, individuals normally have two copies of each locus in the gen
 Deviations from the normal diploid state, known broadly as copy number variation, can cause phenotypic changes and Mendelian disorders.
 Technologies, e.g. microarray, exist for reliably detecting large (greater than 100 kilobases) copy number variants (CNVs).
 Over the last decade, the availability short-read DNA sequencing compelled numerous efforts to identify and characterize smaller variants.
-Sequencing cost, data burden, and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
+Sequencing cost and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
 ES analysis most often focuses on identifying pathogenic single-nucleotide variants and insertion/deletions.
 CNV analysis has demonstrated limited improvement in diagnostic yield \cite{marchuk:2018aa}, but existing data/analysis lacks power to detect exon-level variation \cite{retterer:2015aa,yao:2017aa}.
 
 Current analytic methodologies adequately detect large CNVs, but require large amounts of data and lack resolution for intragenic exon-level variation \cite{plagnol:2012aa,krumm:2012aa,fromer:2012aa,jiang:2015aa}.
-The prevalence and clinical importance of exon-level CNVs remains largely unknown due to inadequate power in ES studies and limited access to clinical genome sequencing data.
+The prevalence and clinical importance of exon-level CNVs remains largely unknown due to inadequate power in ES studies and limited genome sequencing data.
 Recent work on a subset of 1507 genes suggests intragenic CNVs account for 1.9\% of total variants, but 9.8\% of pathogenic variants \cite{truty:2019aa}.
 Additionally, the authors demonstrated 627/2844 (22\%) of identified CNVs spanned a single (598) or partial (29) exon \cite{truty:2019aa}.
 
@@ -239,7 +279,7 @@ The dirichlet distribution is parameterized by $\bm{\alpha} = \{\alpha_1, \alpha
 If $\bm\pi$ is a probability simplex drawn from a dirichlet with $\bm\alpha$, then the variance of $\bm\pi$ is inversely proportional to $\alpha_0$.
 Therefore, we can approximate the inter-sample variance by fitting the dirichlet distribution to each pool and interrogating the mean $\alpha$.
 
-\input{tables-poolSummary.tex}
+\input{tables/poolSummary.tex}
 
 Using multiplexed capture, we sequenced 3 16-sample pools and 2 8-sample pools with Agilent baits and 2 16-sample pools with IDT baits (\Cref{tab:poolSummary}).
 To compare to individually-captured Agilent data, we randomly-selected 5 16-sample pools from the NCGENES cohort.
@@ -249,13 +289,13 @@ We found, with one exception, multiplexed capture pools had greater $\alpha_0$ o
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures-alpha0-1.pdf}
-  \caption{Multiplexed capture (MC) decreases variance with respect to independent captures (IC), as estimated by fitting the dirichlet distribution. Total counts/sample given on the horizontal axis; mean $\alpha$ given on the vertical axis. $\alpha_0$ is inversely proportional to inter-sample variance. Each line/point represents a single pool. The point indicates the median total counts across the pool, with the range given by the line. Orange indicates a multiplexed capture; blue indicates independent captures. Triangles indicate pools using Agilent (AGL) capture; squares indicate Integrated DNA Technologies (IDT).}
+  \includegraphics[]{figures/alpha0-1.pdf}
+  \caption{Multiplexed capture decreases variance, as estimated by fitting the dirichlet distribution. Total counts/sample given on the horizontal axis; mean $\alpha$ given on the vertical axis. $\alpha_0$ is inversely proportional to inter-sample variance. Each line/point represents a single pool. The point indicates the median total counts across the pool, with the range given by the line. Orange indicates a multiplexed capture; blue indicates independent captures. Triangles indicate pools using Agilent (AGL) capture; squares indicate Integrated DNA Technologies (IDT).}
   \label{fig:alpha0}
 \end{figure}
 
 The multiplexed pool without decreased inter-sample variance, IDT-MC, had a much larger spread in sequencing depth across the pool (\Cref{tab:poolSummary}, \Cref{fig:alpha0}).
-Looking at the total mapped molecules, the IDT-MC pool had a relative standard deviation of \Sexpr{poolTbl[pool == "IDT-MC", rsdTotal]}\%, over double the next highest pool.
+Looking at the total mapped molecules, the IDT-MC pool had a relative standard deviation of 64.2\%, over double the next highest pool.
 We hypothesized the absent reduction in variation stemmed from poor library balance during the multiplexing step.
 We subsequently captured a new pool using the same DNA input, IDT-RR, and found comparable reductions in inter-sample variance (the pool with the highest $\alpha_0$ in \Cref{fig:alpha0}).
 
@@ -266,8 +306,8 @@ We did, however, observe near-complete reduction in dispersion for the better-ba
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures-mnVrPlot-1.pdf}%
-  \includegraphics[]{figures-mnVrPlot-2.pdf}
+  \includegraphics[]{figures/mnVrPlot-1.pdf}%
+  \includegraphics[]{figures/mnVrPlot-2.pdf}
   \caption{Mean-variance relationship demonstrates less dispersion in multiplexed capture. (A) Agilent (AGL) capture pools; (B) Integrated DNA Technologies (IDT) capture pools. Mean counts per exon given on the horizontal axis; mean variance per exon given on the vertical axis. Contours show the distribution of points by pool. Dotted lines show the ordinary least squares regression fit. Orange indicates multiplexed capture pools; blue indicates independently captured pools. The dashed gray line represents the 1:1 relationship expected under a Poisson process. Lines above the plot show the density of mean values by pool; lines to the right of the plot show the density of variance values by pool.}
   \label{fig:mnvr}
 \end{figure}
@@ -282,18 +322,18 @@ We found the reduced inter-sample variance with multiplexed capture leads to app
 Pool2, where we repeated the initial fragmentation 5 times, did not perform as well as the other multiplexed pools.
 We also found two samples within the WGS pool did not correlate well with the rest of the pool.
 
-When we looked at independently-captured subjects, we found appropriate control sets for most of the \Sexpr{subjectMeta[pool == "NCGENES", .N]} NCGENES subjects (\Cref{fig:edSelection}D).
-However, ExomeDepth only selected \Sexpr{unique(subjectCorr[ , .(subject, pool, propSelected)])[pool == "NCGENES", round(mean(propSelected)*100, 1)]}\% of available samples as controls, on average (\Cref{fig:edSelection}C).
+When we looked at independently-captured subjects, we found appropriate control sets for most of the 112 NCGENES subjects (\Cref{fig:edSelection}D).
+However, ExomeDepth only selected 12.2\% of available samples as controls, on average (\Cref{fig:edSelection}C).
 Similarly, with the independently-captured IDT-IC pool we find low control numbers for most samples.
 While possible to select the same number of controls but exhibit differing dispersion, we observed little difference in the dispersion between independent and multiplexed capture (\Cref{fig:edSelection}B).
 Overall, multiplexed capture provided appropriate controls for most samples tested, however an adequately-large set of available controls delivered comparable performance.
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures-edSelection-1.pdf}%
-  \includegraphics[]{figures-edSelection-2.pdf}
-  \includegraphics[]{figures-edSelection-3.pdf}%
-  \includegraphics[]{figures-edSelection-4.pdf}
+  \includegraphics[]{figures/edSelection-1.pdf}%
+  \includegraphics[]{figures/edSelection-2.pdf}
+  \includegraphics[]{figures/edSelection-3.pdf}%
+  \includegraphics[]{figures/edSelection-4.pdf}
   \caption{ExomeDepth control selection. (A) median count per exon; (B) estimated phi parameter from ExomeDepth; (C) proportion of available samples selected as a control; (D) total number of controls selected. Each point represents a single sample, with samples grouped by pool. Triangles indicate independently-captured samples; circles indiciate a single multiplexed capture within the pool. Dotted vertical line separates the two capture platforms.}
   \label{fig:edSelection}
 \end{figure}
@@ -315,12 +355,12 @@ When interrogating Matthew's correlation coefficient \cite{matthews:1975aa} and 
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures-simPlts-1.pdf}%
-  \includegraphics[]{figures-simPlts-2.pdf}%
-  \includegraphics[]{figures-simPlts-3.pdf}
-  \includegraphics[]{figures-simPlts-4.pdf}%
-  \includegraphics[]{figures-simPlts-5.pdf}%
-  \includegraphics[]{figures-simPlts-6.pdf}
+  \includegraphics[]{figures/simPlts-1.pdf}%
+  \includegraphics[]{figures/simPlts-2.pdf}%
+  \includegraphics[]{figures/simPlts-3.pdf}
+  \includegraphics[]{figures/simPlts-4.pdf}%
+  \includegraphics[]{figures/simPlts-5.pdf}%
+  \includegraphics[]{figures/simPlts-6.pdf}
   \caption{Algorithm performance comparing mcCNV and ExomeDepth. (A-C) mcCNV versus ExomeDepth with default parameters, $1/10,000$ transition probability and 50 kb expected variant length. (D-F) mcCNV versus ExomeDepth with simulation-matched parameters, $1/1,000$ transition probability and 1 kb expected variant length. Numbered points indicate the simulated depth in millions of molecules. `MCC' indicates Matthew's correlation coefficient; `TPR' indicates true positive rate/sensitivity; `FDR' indicates false discovery rate. Dashed black line shows the 1:1 relationship.}
   \label{fig:simRes}
 \end{figure}
@@ -329,13 +369,13 @@ When interrogating Matthew's correlation coefficient \cite{matthews:1975aa} and 
 
 To establish a truth set on real data, we performed matched genome sequencing on the subjects included in the WGS pool.
 Following the best practices suggested by Trost et al. \cite{trost:2018aa}, we performed read-depth based CNV calling using the genome data.
-In line with recommendations by Trost et al., we excluded from comparative  analysis any exons overlapping repetitive or low-complexity regions (\Sexpr{intAgl[(rlcr), formatC(.N, big.mark = ",")]} out of \Sexpr{intAgl[ , formatC(.N, big.mark = ",")]}).
+In line with recommendations by Trost et al., we excluded from comparative  analysis any exons overlapping repetitive or low-complexity regions (34,856 out of 179,250).
 We then compared the exome calls using mcCNV and ExomeDepth to the genome calls using the overlap of ERDS and cnvpytor.
 \Cref{tab:wgsCallBySbj} lists the total calls by subject.
-Overall, mcCNV predicted the largest number of variants; however, \Sexpr{wgsCallBySbj[ , .(N = c(mcDup, mcDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]}\% of predicted variants were deletions from two samples (NCG\_00790 and NCG\_00851).
-ExomeDepth also predicted a disproportionate number of deletions for NCG\_00790 and NCG\_00851, totaling \Sexpr{wgsCallBySbj[ , .(N = c(edDup, edDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]}\% of calls.
+Overall, mcCNV predicted the largest number of variants; however, 85.7\% of predicted variants were deletions from two samples (NCG\_00790 and NCG\_00851).
+ExomeDepth also predicted a disproportionate number of deletions for NCG\_00790 and NCG\_00851, totaling 69.4\% of calls.
 
-\input{tables-wgsCallBySbj.tex}
+\input{tables/wgsCallBySbj.tex}
 
 Looking at the control selection, for NCG\_00790 and NCG\_00851 ExomeDepth only selected 2 and 3 controls, respectively.
 Furthermore, NCG\_00790 and NCG\_00851 had substantially higher dispersion than the rest of the pool (two outliers in \Cref{fig:edSelection}B).
@@ -346,12 +386,12 @@ When we excluded NCG\_00790 and NCG\_00851 from the analysis, mcCNV had comparab
 Both algorithms demonstrated greater power to detect deletions.
 \Cref{fig:wgsVenn} shows the call overlap, excluding NCG\_00790 and NCG\_00851, between the three approaches.
 
-\input{tables-predMetrics.tex}
+\input{tables/predMetrics.tex}
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures-vennDiag-1.pdf}%
-  \includegraphics[]{figures-vennDiag-2.pdf}
+  \includegraphics[]{figures/vennDiag-1.pdf}%
+  \includegraphics[]{figures/vennDiag-2.pdf}
   \caption{Copy number variant call concordance for the WGS pool, excluding subjects NCG\_00790 and NCG\_00851 due to poor correlation to the rest of the pool. (A) predicted duplications; (B) predicted deletions. mcCNV in grey; ExomeDepth in blue; ERDS/cnvpytor in orange. Values within overlaps give the number of variants.}
   \label{fig:wgsVenn}
 \end{figure}
@@ -366,7 +406,7 @@ Both algorithms demonstrated greater power to detect deletions.
 The medical genetics community still lacks robust exome-wide information about small (exon-level) variant prevalence.
 Others have established the reliability and cost-efficiency of pre-capture multiplexing \cite{ramos:2012aa,wesolowska:2011aa,shearer:2012aa,neiman:2012aa,rohland:2012aa}, and most commercial exome capture platforms have protocols for pre-capture multiplexing.
 Here, we demonstrate the reduction in inter-sample variance when pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
-Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
+Despite the benefits, many clinical laboratories do no employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
 While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase the diagnostic yield for patients.
 
 Multiplexed capture is not without limitations.
@@ -411,10 +451,6 @@ Two possibilities exist: (1) the algorithms all fail over specific regions, or (
 Having eliminated calls from repetitive and low-complexity regions, we believe possibility (2) is more likely.
 To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
 Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.
-
-\section{Funding information}
-
-This work was supported by the National Institute of Child and Human Development [F30HD101228] and by the National Institute of General Medical Sciences [5T32GM067553].
 
 %%----------------------------------------------------------------------------%%
 %% References
