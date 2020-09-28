@@ -6,7 +6,6 @@ doc
 Meta
 inst/noBuild
 vignettes/*.log
-vignettes/*.tex
 vignettes/*.toc
 vignettes/*.synctex.gz
 vignettes/*.bbl
