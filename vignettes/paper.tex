@@ -78,18 +78,18 @@
 \author[1]{Alicia T Brandt}
 \author[1]{Christian R Tilley}
 \author[1]{Piotr A Mieczkowski}
-\author[2]{Kimberly Robasky}
+\author[1,2,3]{Kimberly Robasky}
 \author[2]{Chris Bizon}
 \author[2]{Jeffery L Tilson}
 \author[1,2]{Bradford C Powell}
 \author[1,2]{Darius M Bost}
 \author[1]{Clark D Jeffries}
-\author[1]{James P Evans}
 \author[1]{Jonathan S Berg}
-\author[1,2,3]{Kirk C Wilhelmsen}
+\author[1,2,4]{Kirk C Wilhelmsen}
 \affil[1]{UNC School of Medicine, Department of Genetics, Chapel Hill, NC}
 \affil[2]{Renaissance Computing Institute, Chapel Hill, NC}
-\affil[3]{UNC School of Medicine, Department of Neurology, Chapel Hill, NC}
+\affil[3]{UNC School of Information and Library Science, Chapel Hill, NC}
+\affil[4]{UNC School of Medicine, Department of Neurology, Chapel Hill, NC}
 \date{}
 
 %% Keep package name from getting hyphenated
@@ -136,12 +136,12 @@ In human genetics, individuals normally have two copies of each locus in the gen
 Deviations from the normal diploid state, known broadly as copy number variation, can cause phenotypic changes and Mendelian disorders.
 Technologies, e.g. microarray, exist for reliably detecting large (greater than 100 kilobases) copy number variants (CNVs).
 Over the last decade, the availability short-read DNA sequencing compelled numerous efforts to identify and characterize smaller variants.
-Sequencing cost and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
+Sequencing cost, data burden, and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
 ES analysis most often focuses on identifying pathogenic single-nucleotide variants and insertion/deletions.
 CNV analysis has demonstrated limited improvement in diagnostic yield \cite{marchuk:2018aa}, but existing data/analysis lacks power to detect exon-level variation \cite{retterer:2015aa,yao:2017aa}.
 
 Current analytic methodologies adequately detect large CNVs, but require large amounts of data and lack resolution for intragenic exon-level variation \cite{plagnol:2012aa,krumm:2012aa,fromer:2012aa,jiang:2015aa}.
-The prevalence and clinical importance of exon-level CNVs remains largely unknown due to inadequate power in ES studies and limited genome sequencing data.
+The prevalence and clinical importance of exon-level CNVs remains largely unknown due to inadequate power in ES studies and limited access to clinical genome sequencing data.
 Recent work on a subset of 1507 genes suggests intragenic CNVs account for 1.9\% of total variants, but 9.8\% of pathogenic variants \cite{truty:2019aa}.
 Additionally, the authors demonstrated 627/2844 (22\%) of identified CNVs spanned a single (598) or partial (29) exon \cite{truty:2019aa}.
 
@@ -279,7 +279,7 @@ The dirichlet distribution is parameterized by $\bm{\alpha} = \{\alpha_1, \alpha
 If $\bm\pi$ is a probability simplex drawn from a dirichlet with $\bm\alpha$, then the variance of $\bm\pi$ is inversely proportional to $\alpha_0$.
 Therefore, we can approximate the inter-sample variance by fitting the dirichlet distribution to each pool and interrogating the mean $\alpha$.
 
-\input{tables/poolSummary.tex}
+\input{tables-poolSummary.tex}
 
 Using multiplexed capture, we sequenced 3 16-sample pools and 2 8-sample pools with Agilent baits and 2 16-sample pools with IDT baits (\Cref{tab:poolSummary}).
 To compare to individually-captured Agilent data, we randomly-selected 5 16-sample pools from the NCGENES cohort.
@@ -289,8 +289,8 @@ We found, with one exception, multiplexed capture pools had greater $\alpha_0$ o
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/alpha0-1.pdf}
-  \caption{Multiplexed capture decreases variance, as estimated by fitting the dirichlet distribution. Total counts/sample given on the horizontal axis; mean $\alpha$ given on the vertical axis. $\alpha_0$ is inversely proportional to inter-sample variance. Each line/point represents a single pool. The point indicates the median total counts across the pool, with the range given by the line. Orange indicates a multiplexed capture; blue indicates independent captures. Triangles indicate pools using Agilent (AGL) capture; squares indicate Integrated DNA Technologies (IDT).}
+  \includegraphics[]{figures-alpha0-1.pdf}
+  \caption{Multiplexed capture (MC) decreases variance with respect to independent captures (IC), as estimated by fitting the dirichlet distribution. Total counts/sample given on the horizontal axis; mean $\alpha$ given on the vertical axis. $\alpha_0$ is inversely proportional to inter-sample variance. Each line/point represents a single pool. The point indicates the median total counts across the pool, with the range given by the line. Orange indicates a multiplexed capture; blue indicates independent captures. Triangles indicate pools using Agilent (AGL) capture; squares indicate Integrated DNA Technologies (IDT).}
   \label{fig:alpha0}
 \end{figure}
 
@@ -306,8 +306,8 @@ We did, however, observe near-complete reduction in dispersion for the better-ba
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/mnVrPlot-1.pdf}%
-  \includegraphics[]{figures/mnVrPlot-2.pdf}
+  \includegraphics[]{figures-mnVrPlot-1.pdf}%
+  \includegraphics[]{figures-mnVrPlot-2.pdf}
   \caption{Mean-variance relationship demonstrates less dispersion in multiplexed capture. (A) Agilent (AGL) capture pools; (B) Integrated DNA Technologies (IDT) capture pools. Mean counts per exon given on the horizontal axis; mean variance per exon given on the vertical axis. Contours show the distribution of points by pool. Dotted lines show the ordinary least squares regression fit. Orange indicates multiplexed capture pools; blue indicates independently captured pools. The dashed gray line represents the 1:1 relationship expected under a Poisson process. Lines above the plot show the density of mean values by pool; lines to the right of the plot show the density of variance values by pool.}
   \label{fig:mnvr}
 \end{figure}
@@ -330,10 +330,10 @@ Overall, multiplexed capture provided appropriate controls for most samples test
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/edSelection-1.pdf}%
-  \includegraphics[]{figures/edSelection-2.pdf}
-  \includegraphics[]{figures/edSelection-3.pdf}%
-  \includegraphics[]{figures/edSelection-4.pdf}
+  \includegraphics[]{figures-edSelection-1.pdf}%
+  \includegraphics[]{figures-edSelection-2.pdf}
+  \includegraphics[]{figures-edSelection-3.pdf}%
+  \includegraphics[]{figures-edSelection-4.pdf}
   \caption{ExomeDepth control selection. (A) median count per exon; (B) estimated phi parameter from ExomeDepth; (C) proportion of available samples selected as a control; (D) total number of controls selected. Each point represents a single sample, with samples grouped by pool. Triangles indicate independently-captured samples; circles indiciate a single multiplexed capture within the pool. Dotted vertical line separates the two capture platforms.}
   \label{fig:edSelection}
 \end{figure}
@@ -355,12 +355,12 @@ When interrogating Matthew's correlation coefficient \cite{matthews:1975aa} and 
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/simPlts-1.pdf}%
-  \includegraphics[]{figures/simPlts-2.pdf}%
-  \includegraphics[]{figures/simPlts-3.pdf}
-  \includegraphics[]{figures/simPlts-4.pdf}%
-  \includegraphics[]{figures/simPlts-5.pdf}%
-  \includegraphics[]{figures/simPlts-6.pdf}
+  \includegraphics[]{figures-simPlts-1.pdf}%
+  \includegraphics[]{figures-simPlts-2.pdf}%
+  \includegraphics[]{figures-simPlts-3.pdf}
+  \includegraphics[]{figures-simPlts-4.pdf}%
+  \includegraphics[]{figures-simPlts-5.pdf}%
+  \includegraphics[]{figures-simPlts-6.pdf}
   \caption{Algorithm performance comparing mcCNV and ExomeDepth. (A-C) mcCNV versus ExomeDepth with default parameters, $1/10,000$ transition probability and 50 kb expected variant length. (D-F) mcCNV versus ExomeDepth with simulation-matched parameters, $1/1,000$ transition probability and 1 kb expected variant length. Numbered points indicate the simulated depth in millions of molecules. `MCC' indicates Matthew's correlation coefficient; `TPR' indicates true positive rate/sensitivity; `FDR' indicates false discovery rate. Dashed black line shows the 1:1 relationship.}
   \label{fig:simRes}
 \end{figure}
@@ -375,7 +375,7 @@ We then compared the exome calls using mcCNV and ExomeDepth to the genome calls 
 Overall, mcCNV predicted the largest number of variants; however, 85.7\% of predicted variants were deletions from two samples (NCG\_00790 and NCG\_00851).
 ExomeDepth also predicted a disproportionate number of deletions for NCG\_00790 and NCG\_00851, totaling 69.4\% of calls.
 
-\input{tables/wgsCallBySbj.tex}
+\input{tables-wgsCallBySbj.tex}
 
 Looking at the control selection, for NCG\_00790 and NCG\_00851 ExomeDepth only selected 2 and 3 controls, respectively.
 Furthermore, NCG\_00790 and NCG\_00851 had substantially higher dispersion than the rest of the pool (two outliers in \Cref{fig:edSelection}B).
@@ -386,12 +386,12 @@ When we excluded NCG\_00790 and NCG\_00851 from the analysis, mcCNV had comparab
 Both algorithms demonstrated greater power to detect deletions.
 \Cref{fig:wgsVenn} shows the call overlap, excluding NCG\_00790 and NCG\_00851, between the three approaches.
 
-\input{tables/predMetrics.tex}
+\input{tables-predMetrics.tex}
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/vennDiag-1.pdf}%
-  \includegraphics[]{figures/vennDiag-2.pdf}
+  \includegraphics[]{figures-vennDiag-1.pdf}%
+  \includegraphics[]{figures-vennDiag-2.pdf}
   \caption{Copy number variant call concordance for the WGS pool, excluding subjects NCG\_00790 and NCG\_00851 due to poor correlation to the rest of the pool. (A) predicted duplications; (B) predicted deletions. mcCNV in grey; ExomeDepth in blue; ERDS/cnvpytor in orange. Values within overlaps give the number of variants.}
   \label{fig:wgsVenn}
 \end{figure}
@@ -406,7 +406,7 @@ Both algorithms demonstrated greater power to detect deletions.
 The medical genetics community still lacks robust exome-wide information about small (exon-level) variant prevalence.
 Others have established the reliability and cost-efficiency of pre-capture multiplexing \cite{ramos:2012aa,wesolowska:2011aa,shearer:2012aa,neiman:2012aa,rohland:2012aa}, and most commercial exome capture platforms have protocols for pre-capture multiplexing.
 Here, we demonstrate the reduction in inter-sample variance when pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
-Despite the benefits, many clinical laboratories do no employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
+Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
 While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase the diagnostic yield for patients.
 
 Multiplexed capture is not without limitations.
@@ -451,6 +451,10 @@ Two possibilities exist: (1) the algorithms all fail over specific regions, or (
 Having eliminated calls from repetitive and low-complexity regions, we believe possibility (2) is more likely.
 To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
 Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.
+
+\section{Funding information}
+
+This work was supported by the National Institute of Child and Human Development [F30HD101228] and by the National Institute of General Medical Sciences [5T32GM067553].
 
 %%----------------------------------------------------------------------------%%
 %% References
