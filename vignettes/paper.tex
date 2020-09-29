@@ -68,6 +68,7 @@
 \usepackage{array}
 \usepackage{colortbl}
 \usepackage[]{caption}
+\usepackage[]{lineno}
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
 \renewcommand\Authfont{\small}
@@ -97,6 +98,12 @@
 
 \setlength{\parindent}{0em}
 \setlength{\parskip}{1ex}
+
+% Run texcount on tex-file and write results to a sum-file
+\immediate\write18{texcount \jobname.tex -out=\jobname.sum}
+% Define macro \wordcount for including the counts
+\usepackage{verbatim}
+\newcommand\wordcount{\verbatiminput{\jobname.sum}}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
@@ -104,12 +111,14 @@
 
 \maketitle
 
+\linenumbers
+
 %%----------------------------------------------------------------------------%%
 %% Abstract
 %%----------------------------------------------------------------------------%%
 
 \begin{abstract}
-\noindent\textbf{Motivation:}As exome sequencing (ES) integrates into clinical practice, we should make every effort to utilize all information generated.
+\noindent\textbf{Motivation:} As exome sequencing (ES) integrates into clinical practice, we should make every effort to utilize all information generated.
 Copy-number variation can lead to Mendelian disorders, but small copy-number variants (CNVs) often get overlooked or obscured by under-powered data collection.
 Many groups have developed methodology for detecting copy-number variants from ES, but existing methods often perform poorly for small CNVs and rely on large sample numbers not always available to clinical laboratories.
 Furthermore, methods often rely on Bayesian approaches requiring user-defined priors in the setting of insufficient prior knowledge.
@@ -460,7 +469,13 @@ This work was supported by the National Institute of Child and Human Development
 %% References
 %%----------------------------------------------------------------------------%%
 
+\nolinenumbers
+
 \bibliographystyle{plain}
 \bibliography{/Users/dayne/Github/mybibs/myBib}
+
+\newpage
+\section*{Word count}
+\wordcount
 
 \end{document}
