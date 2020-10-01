@@ -21,9 +21,7 @@ evalPred <- function(x, y) {
            TPR = unname(cm$byClass["Sensitivity"]),
            FDR = fdr,
            PPV = unname(cm$byClass["Pos Pred Value"]),
-           BalAcc = unname(cm$byClass["Balanced Accuracy"]),
-           cm$byClass["Precision"],
-           cm$byClass["Recall"])
+           BalAcc = unname(cm$byClass["Balanced Accuracy"]))
   signif(out, 3)
 }
 

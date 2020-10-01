@@ -1,23 +1,23 @@
 % latex table generated in R 4.0.0 by xtable 1.8-4 package
-% Mon Sep 14 15:35:43 2020
+% Thu Oct  1 07:58:55 2020
 \begin{table}[]
 \centering
-\begin{tabular}{cllrrrrrrr}
+\begin{tabular}{cllrrrrr}
   \toprule
- &  &  & MCC & TPR & FDR & PPV & BalAcc & Precision & Recall \\ 
+ &  &  & MCC & TPR & FDR & PPV & BalAcc \\ 
   \midrule
-\cellcolor{white} &  & MC & 0.18 & 0.34 & 0.90 & 0.10 & 0.67 & 0.10 & 0.34 \\ 
-  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.26 & 0.36 & 0.81 & 0.19 & 0.68 & 0.19 & 0.36 \\ 
-   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.49 & 0.34 & 0.31 & 0.69 & 0.67 & 0.69 & 0.34 \\ 
-   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}\shortstack{DUP \\ + \\ DEL}} & \multirow{-2}{*}{Sub} & ED & 0.48 & 0.38 & 0.38 & 0.62 & 0.69 & 0.62 & 0.38 \\ 
-   \midrule \cellcolor{white} &  & MC & 0.40 & 0.24 & 0.33 & 0.67 & 0.62 & 0.67 & 0.24 \\ 
-  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.35 & 0.24 & 0.50 & 0.50 & 0.62 & 0.50 & 0.24 \\ 
-   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.40 & 0.25 & 0.33 & 0.67 & 0.62 & 0.67 & 0.25 \\ 
-   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}DUP} & \multirow{-2}{*}{Sub} & ED & 0.38 & 0.27 & 0.45 & 0.55 & 0.63 & 0.55 & 0.27 \\ 
-   \midrule \cellcolor{white} &  & MC & 0.18 & 0.64 & 0.95 & 0.05 & 0.82 & 0.05 & 0.64 \\ 
-  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.22 & 0.56 & 0.91 & 0.09 & 0.78 & 0.09 & 0.56 \\ 
-   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.68 & 0.66 & 0.29 & 0.71 & 0.83 & 0.71 & 0.66 \\ 
-   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}DEL} & \multirow{-2}{*}{Sub} & ED & 0.54 & 0.55 & 0.47 & 0.53 & 0.78 & 0.53 & 0.55 \\ 
+\cellcolor{white} &  & MC & 0.18 & 0.34 & 0.90 & 0.10 & 0.67 \\ 
+  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.26 & 0.36 & 0.81 & 0.19 & 0.68 \\ 
+   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.49 & 0.34 & 0.31 & 0.69 & 0.67 \\ 
+   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}\shortstack{DUP \\ + \\ DEL}} & \multirow{-2}{*}{Sub} & ED & 0.48 & 0.38 & 0.38 & 0.62 & 0.69 \\ 
+   \midrule \cellcolor{white} &  & MC & 0.40 & 0.24 & 0.33 & 0.67 & 0.62 \\ 
+  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.35 & 0.24 & 0.50 & 0.50 & 0.62 \\ 
+   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.40 & 0.25 & 0.33 & 0.67 & 0.62 \\ 
+   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}DUP} & \multirow{-2}{*}{Sub} & ED & 0.38 & 0.27 & 0.45 & 0.55 & 0.63 \\ 
+   \midrule \cellcolor{white} &  & MC & 0.18 & 0.64 & 0.95 & 0.05 & 0.82 \\ 
+  \cellcolor{white} & \multirow{-2}{*}{Full} & ED & 0.22 & 0.56 & 0.91 & 0.09 & 0.78 \\ 
+   \rowcolor[gray]{0.9} \cellcolor{white} &  & MC & 0.68 & 0.66 & 0.29 & 0.71 & 0.83 \\ 
+   \rowcolor[gray]{0.9} \multirow{-4}{*}{\cellcolor{white}DEL} & \multirow{-2}{*}{Sub} & ED & 0.54 & 0.55 & 0.47 & 0.53 & 0.78 \\ 
    \bottomrule
 \end{tabular}
 \caption{mcCNV (MC)/ExomeDepth (ED) calls for `WGS' pool (used as prediction) versus the ERDS/cnvpytor calls from matched genome sequencing (used as truth). Calls are subdivided by duplications (DUP) and deletions (DEL). `Full' gives performance across the full pool; `Sub' gives the performance excluding the poorly correlated samples NCG\_00790 and NCG\_00851 (gray rows). `MCC' is Matthew's correlation coefficient, `TPR' is true positive rate/sensitivity, `FDR' is false discovery rate, `PPV' is positive predictive value, `BalAcc' is balanced accuracy. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis.} 

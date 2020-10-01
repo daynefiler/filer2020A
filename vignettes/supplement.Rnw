@@ -178,7 +178,7 @@ pltAlpha0(a0tbl)
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures/alpha0-1.pdf}
+  \includegraphics[]{figures-alpha0-1.pdf}
   \caption{manuscript figure}
 \end{figure}
 
@@ -211,14 +211,14 @@ with(mnvr[pool %in% c("WGS", "IDT-RR")], {
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures/mnVrPlot-1.pdf}%
-  \includegraphics[]{figures/mnVrPlot-2.pdf}
+  \includegraphics[]{figures-mnVrPlot-1.pdf}%
+  \includegraphics[]{figures-mnVrPlot-2.pdf}
   \caption{manuscript figure}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures/mnVrPlot-3.pdf}%
+  \includegraphics[]{figures-mnVrPlot-3.pdf}%
   \caption{Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horiontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.}
 \end{figure}
 
@@ -238,10 +238,10 @@ addfiglab("D")
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures/edSelection-1.pdf}%
-  \includegraphics[]{figures/edSelection-2.pdf}
-  \includegraphics[]{figures/edSelection-3.pdf}%
-  \includegraphics[]{figures/edSelection-4.pdf}
+  \includegraphics[]{figures-edSelection-1.pdf}%
+  \includegraphics[]{figures-edSelection-2.pdf}
+  \includegraphics[]{figures-edSelection-3.pdf}%
+  \includegraphics[]{figures-edSelection-4.pdf}
   \caption{manuscript figure}
 \end{figure}
 
@@ -287,12 +287,12 @@ addfiglab("F")
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures/simPlts-1.pdf}%
-  \includegraphics[]{figures/simPlts-2.pdf}%
-  \includegraphics[]{figures/simPlts-3.pdf}
-  \includegraphics[]{figures/simPlts-4.pdf}%
-  \includegraphics[]{figures/simPlts-5.pdf}%
-  \includegraphics[]{figures/simPlts-6.pdf}
+  \includegraphics[]{figures-simPlts-1.pdf}%
+  \includegraphics[]{figures-simPlts-2.pdf}%
+  \includegraphics[]{figures-simPlts-3.pdf}
+  \includegraphics[]{figures-simPlts-4.pdf}%
+  \includegraphics[]{figures-simPlts-5.pdf}%
+  \includegraphics[]{figures-simPlts-6.pdf}
   \caption{}
 \end{figure}
 
@@ -403,7 +403,7 @@ predMetrics[predMetrics[ , last(.I), by = rleid(set)][ , V1],
             set := sprintf("\\multirow{-2}{*}{%s}", set)]
 predMetrics[!grepl("multirow", set), set := ""]
 
-predMetrics <- xtable(predMetrics, align = "ccllrrrrrrr")
+predMetrics <- xtable(predMetrics, align = "ccllrrrrr")
 colnames(predMetrics)[1:3] <- ""
 caption(predMetrics) <- "mcCNV (MC)/ExomeDepth (ED) calls for `WGS' pool (used as prediction) versus the ERDS/cnvpytor calls from matched genome sequencing (used as truth). Calls are subdivided by duplications (DUP) and deletions (DEL). `Full' gives performance across the full pool; `Sub' gives the performance excluding the poorly correlated samples NCG\\_00790 and NCG\\_00851 (gray rows). `MCC' is Matthew's correlation coefficient, `TPR' is true positive rate/sensitivity, `FDR' is false discovery rate, `PPV' is positive predictive value, `BalAcc' is balanced accuracy. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis."
 label(predMetrics) <- "tab:predMetrics"
@@ -449,10 +449,10 @@ grid.text("DELETIONS", x = 0.5, y = 0.9)
 
 \begin{figure}
   \centering
-  \includegraphics[]{figures/vennDiag-1.pdf}%
-  \includegraphics[]{figures/vennDiag-2.pdf}
-  \includegraphics[]{figures/vennDiag-3.pdf}%
-  \includegraphics[]{figures/vennDiag-4.pdf}
+  \includegraphics[]{figures-vennDiag-1.pdf}%
+  \includegraphics[]{figures-vennDiag-2.pdf}
+  \includegraphics[]{figures-vennDiag-3.pdf}%
+  \includegraphics[]{figures-vennDiag-4.pdf}
   \caption{(A-B) included in manuscript; (C-D) show the concordance of duplications and deletions for the whole WGS pool. mcCNV calls in gray; ExomeDepth calls in blue; ERDS/cnvpytor calls in orange.}
 \end{figure}
 
