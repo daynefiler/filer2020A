@@ -17,3 +17,4 @@ vignettes/tables
 vignettes/data
 vignettes/*.docx
 vignettes/*.sum
+vignettes/cache
