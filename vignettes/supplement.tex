@@ -67,6 +67,7 @@
 \usepackage{array}
 \usepackage{colortbl}
 \usepackage{siunitx}
+\usepackage{authblk}
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
 
 %% Supplemental figure notation
@@ -87,8 +88,29 @@
 
 
 
-\title{Supplemental Information}
-\author{Dayne Filer}
+\title{Pre-capture multiplexing provides additional power to detect copy number variation in exome sequencing: Supplemental Information}
+\author[1,2]{Dayne L. Filer}
+\author[1]{Fengshen Kuo}
+\author[1]{Alicia T. Brandt}
+\author[1]{Christian R. Tilley}
+\author[1]{Piotr A. Mieczkowski}
+\author[1]{Jonathan S. Berg}
+\author[1,2,3]{Kimberly Robasky}
+\author[1,4]{Yun Li}
+\author[2]{Chris Bizon}
+\author[2]{Jeffery L. Tilson}
+\author[1,2]{Bradford C. Powell}
+\author[1,2]{Darius M. Bost}
+\author[2]{Clark D. Jeffries}
+\author[1,2,5]{Kirk C. Wilhelmsen}
+\affil[1]{Department of Genetics, UNC School of Medicine, Chapel Hill, NC}
+\affil[2]{Renaissance Computing Institute, Chapel Hill, NC}
+\affil[3]{UNC School of Information and Library Science, Chapel Hill, NC}
+\affil[4]{Department of Biostatistics, UNC Gillings School of Global Public Health, Chapel Hill, NC}
+\affil[5]{Department of Neurology, UNC School of Medicine, Chapel Hill, NC}
+
+\date{}
+
 \maketitle
 
 \tableofcontents
@@ -100,9 +122,10 @@
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
 \hlkwd{library}\hlstd{(filer2020A)}
-\hlkwd{library}\hlstd{(dlfUtils)} \hlcom{## Needed for plotting utilities}
-\hlkwd{library}\hlstd{(parallel)}
+\hlkwd{library}\hlstd{(mcCNV)}
 \hlkwd{library}\hlstd{(eulerr)}
+\hlkwd{library}\hlstd{(dlfUtils)}
+\hlkwd{library}\hlstd{(parallel)}
 \hlkwd{library}\hlstd{(grid)}
 \end{alltt}
 \end{kframe}
@@ -123,13 +146,32 @@
                          \hlkwc{rsdTotal} \hlstd{=} \hlkwd{sd}\hlstd{(totalMolCount)}\hlopt{/}\hlkwd{mean}\hlstd{(totalMolCount)}\hlopt{*}\hlnum{100}\hlstd{),}
                        \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(pool, capture, multiplexCapture)]}
 \hlstd{poolTbl[ , rsdTotal} \hlkwb{:=} \hlkwd{round}\hlstd{(rsdTotal,} \hlnum{1}\hlstd{)]}
+\hlstd{poolTbl}
 \end{alltt}
+\begin{verbatim}
+##       pool capture multiplexCapture   N medExon medTotal minTotal  maxTotal
+## 1:  IDT-IC     IDT            FALSE  16     143 55149058 37453015  85138915
+## 2:  IDT-MC     IDT             TRUE  16      93 29772684 16674468 118147912
+## 3:  IDT-RR     IDT             TRUE  16     272 79079629 61289322 120147888
+## 4: NCGENES Agilent            FALSE 112      93 24451245 12749793  68565471
+## 5:   Pool1 Agilent             TRUE  16      56 13265614  8911132  17324903
+## 6:   Pool2 Agilent             TRUE  16      86 21076056  4585195  27846146
+## 7:    SMA1 Agilent             TRUE   8      56 12256002 11051840  13600697
+## 8:    SMA2 Agilent             TRUE   8      25  5622040  4904000   6545360
+## 9:     WGS Agilent             TRUE  16     196 46406224 36496097  65200410
+##    rsdTotal
+## 1:     22.4
+## 2:     64.2
+## 3:     22.9
+## 4:     27.6
+## 5:     18.5
+## 6:     27.6
+## 7:      6.2
+## 8:     10.4
+## 9:     16.4
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
-
-
-
-\input{tables-poolSummary.tex}
 
 \newpage
 \section{Mean-variance relationship for multplexed versus independent capture}
@@ -170,8 +212,6 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \end{kframe}
 \end{knitrout}
 
-
-
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
 \begin{alltt}
@@ -192,6 +232,13 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \hlstd{a0tbl} \hlkwb{<-} \hlkwd{merge}\hlstd{(a0tbl, poolCts)}
 \hlstd{a0tbl[ , mc} \hlkwb{:=} \hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"IDT-IC|rand"}\hlstd{, pool)]}
 \hlstd{a0tbl[ , idt} \hlkwb{:=} \hlkwd{grepl}\hlstd{(}\hlstr{"IDT"}\hlstd{, pool)]}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hlkwd{pltAlpha0}\hlstd{(a0tbl)}
 \end{alltt}
 \end{kframe}
@@ -199,7 +246,7 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[]{figures-alpha0-1.pdf}
+  \includegraphics[]{figures-a0plot-1.pdf}
   \caption{manuscript figure}
 \end{figure}
 
@@ -214,9 +261,9 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
               \hlkwc{colVec} \hlstd{=} \hlkwd{c}\hlstd{(}\hlkwd{rep}\hlstd{(}\hlstr{'darkblue'}\hlstd{,} \hlnum{5}\hlstd{),} \hlkwd{rep}\hlstd{(}\hlstr{'darkorange'}\hlstd{,} \hlnum{5}\hlstd{)),}
               \hlkwc{lgnd} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \hlstd{\})}
-\hlcom{# legend(x = "center", lwd = 4, col = c('darkblue', 'darkorange'),}
-\hlcom{#        c("AGL-IC", "AGL-MC"), bty = "n", cex = 0.75)}
-\hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{)}
+\hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{,} \hlkwc{units} \hlstd{=} \hlstr{"ndc"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlkwc{x} \hlstd{=} \hlstr{"center"}\hlstd{,} \hlkwc{lwd} \hlstd{=} \hlnum{4}\hlstd{,} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{'darkblue'}\hlstd{,} \hlstr{'darkorange'}\hlstd{),}
+       \hlkwd{c}\hlstd{(}\hlstr{"AGL-IC"}\hlstd{,} \hlstr{"AGL-MC"}\hlstd{),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{,} \hlkwc{cex} \hlstd{=} \hlnum{0.75}\hlstd{)}
 \hlstd{idtPools} \hlkwb{<-} \hlkwd{c}\hlstd{(}\hlstr{"IDT-MC"}\hlstd{,} \hlstr{"IDT-IC"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)}
 \hlkwd{with}\hlstd{(mnvr[pool} \hlopt{%in%} \hlstd{idtPools], \{}
   \hlkwd{pltMnVrCont}\hlstd{(}\hlkwc{dat} \hlstd{=} \hlkwd{as.data.table}\hlstd{(}\hlkwd{as.list}\hlstd{(}\hlkwd{environment}\hlstd{())),}
@@ -225,6 +272,8 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
               \hlkwc{lgnd} \hlstd{=} \hlnum{FALSE}\hlstd{)}
 \hlstd{\})}
 \hlkwd{addfiglab}\hlstd{(}\hlstr{"B"}\hlstd{)}
+\hlkwd{legend}\hlstd{(}\hlkwc{x} \hlstd{=} \hlstr{"center"}\hlstd{,} \hlkwc{lwd} \hlstd{=} \hlnum{4}\hlstd{,} \hlkwc{col} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{'darkblue'}\hlstd{,} \hlstr{'darkorange'}\hlstd{),}
+       \hlkwd{c}\hlstd{(}\hlstr{"IDT-IC"}\hlstd{,} \hlstr{"IDT-MC"}\hlstd{),} \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{,} \hlkwc{cex} \hlstd{=} \hlnum{0.75}\hlstd{)}
 \hlkwd{with}\hlstd{(mnvr[pool} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlstr{"WGS"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)], \{}
   \hlkwd{pltMnVrCont}\hlstd{(}\hlkwc{dat} \hlstd{=} \hlkwd{as.data.table}\hlstd{(}\hlkwd{as.list}\hlstd{(}\hlkwd{environment}\hlstd{())),}
               \hlkwc{grpVec} \hlstd{=} \hlkwd{factor}\hlstd{(pool,} \hlkwc{levels} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"WGS"}\hlstd{,} \hlstr{"IDT-RR"}\hlstd{)),}
@@ -244,7 +293,7 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \begin{figure}[H]
   \centering
   \includegraphics[]{figures-mnVrPlot-3.pdf}%
-  \caption{Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horiontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.}
+  \caption{Comparison of mean-variance relationship between WGS pool (blue) and IDT-RR pool (orange). Mean count by exon given on horizontal axis; variance of exon counts given on horizontal axis. Dotted lines show the ordinary least-squares fit. Lines above plot show the distribution of mean values; lines to the right of the plot show the distribution of variance values.}
 \end{figure}
 
 \newpage
@@ -295,7 +344,38 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
             \hlkwd{c}\hlstd{(}\hlstr{"dep"}\hlstd{,} \hlstr{"mcMCC"}\hlstd{,} \hlstr{"edMCC"}\hlstd{,} \hlstr{"ebMCC"}\hlstd{,} \hlstr{"mcTPR"}\hlstd{,}
               \hlstr{"edTPR"}\hlstd{,} \hlstr{"ebTPR"}\hlstd{,} \hlstr{"mcFDR"}\hlstd{,} \hlstr{"edFDR"}\hlstd{,} \hlstr{"ebFDR"}\hlstd{))}
 \hlstd{simResTbl} \hlkwb{<-} \hlstd{simResTbl[ ,} \hlkwd{lapply}\hlstd{(.SD, signif,} \hlnum{3}\hlstd{),} \hlkwc{by} \hlstd{= dep]}
+\hlstd{simResTbl}
+\end{alltt}
+\begin{verbatim}
+##     dep mcMCC edMCC ebMCC mcTPR edTPR ebTPR   mcFDR   edFDR   ebFDR
+##  1:   5 0.713 0.401 0.519 0.522 0.192 0.298 0.02230 0.15900 0.09260
+##  2:  10 0.694 0.628 0.708 0.503 0.431 0.549 0.04250 0.08450 0.08590
+##  3:  15 0.781 0.742 0.801 0.627 0.581 0.690 0.02600 0.05270 0.06940
+##  4:  20 0.840 0.811 0.857 0.719 0.682 0.777 0.01810 0.03420 0.05360
+##  5:  25 0.879 0.856 0.893 0.783 0.752 0.832 0.01310 0.02460 0.04090
+##  6:  30 0.907 0.889 0.918 0.831 0.804 0.872 0.00967 0.01750 0.03210
+##  7:  35 0.926 0.909 0.935 0.864 0.839 0.897 0.00807 0.01370 0.02600
+##  8:  40 0.941 0.927 0.948 0.891 0.869 0.917 0.00638 0.01060 0.02080
+##  9:  45 0.952 0.940 0.957 0.911 0.892 0.932 0.00527 0.00846 0.01680
+## 10:  50 0.961 0.950 0.965 0.927 0.910 0.944 0.00437 0.00701 0.01370
+## 11:  55 0.966 0.957 0.969 0.937 0.921 0.951 0.00377 0.00569 0.01180
+## 12:  60 0.972 0.963 0.974 0.947 0.933 0.959 0.00318 0.00517 0.00986
+## 13:  65 0.976 0.969 0.978 0.955 0.943 0.964 0.00290 0.00433 0.00837
+## 14:  70 0.978 0.972 0.980 0.960 0.949 0.968 0.00252 0.00381 0.00735
+## 15:  75 0.981 0.976 0.983 0.965 0.955 0.972 0.00212 0.00321 0.00625
+## 16:  80 0.983 0.978 0.985 0.969 0.960 0.975 0.00200 0.00294 0.00560
+## 17:  85 0.985 0.980 0.986 0.972 0.963 0.977 0.00181 0.00263 0.00491
+## 18:  90 0.987 0.982 0.987 0.975 0.967 0.979 0.00169 0.00243 0.00451
+## 19:  95 0.988 0.984 0.988 0.978 0.970 0.981 0.00156 0.00223 0.00393
+## 20: 100 0.989 0.985 0.989 0.980 0.973 0.982 0.00150 0.00195 0.00359
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
 \hlkwd{pltStatCompare}\hlstd{(}\hlkwc{xRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{ExomeDepthDefault,} \hlkwc{yRes} \hlstd{= procSimRes}\hlopt{$}\hlstd{mcCNV,}
                \hlkwc{stat} \hlstd{=} \hlstr{"mcc"}\hlstd{,} \hlkwc{xlab} \hlstd{=} \hlstr{"ExomeDepth (default)"}\hlstd{,} \hlkwc{ylab} \hlstd{=} \hlstr{"mcCNV"}\hlstd{)}
 \hlkwd{addfiglab}\hlstd{(}\hlstr{"A"}\hlstd{)}
@@ -328,10 +408,6 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
   \includegraphics[]{figures-simPlts-6.pdf}
   \caption{}
 \end{figure}
-
-
-
-\input{tables-simResTbl.tex}
 
 \newpage
 \section{Comparing calls on WGS pool}
@@ -369,14 +445,30 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \hlstd{wgs[ , wg} \hlkwb{:=} \hlstd{wgDup} \hlopt{|} \hlstd{wgDel]}
 \hlkwd{setcolorder}\hlstd{(wgs,} \hlkwd{c}\hlstd{(}\hlkwd{key}\hlstd{(wgs),} \hlstr{'mc'}\hlstd{,} \hlstr{'ed'}\hlstd{,} \hlstr{'wg'}\hlstd{))}
 \hlstd{wgsCallBySbj} \hlkwb{<-} \hlstd{wgs[ ,} \hlkwd{lapply}\hlstd{(.SD, sum),} \hlkwc{.SDcols} \hlstd{= is.logical,} \hlkwc{by} \hlstd{= subject]}
-\hlkwd{saveRDS}\hlstd{(wgsCallBySbj,} \hlstr{"data/wgsCallBySbj.rds"}\hlstd{)}
+\hlstd{wgsCallBySbj}
 \end{alltt}
+\begin{verbatim}
+##       subject   mc   ed  wg mcDup edDup wgDup mcDel edDel wgDel
+##  1: NCG_00012   90  106 143    61    73   121    29    33    22
+##  2: NCG_00237   82  101 165    50    64   129    32    37    36
+##  3: NCG_00525   68   74 151    30    33   110    38    41    41
+##  4: NCG_00593   45   58 142    22    28    81    23    30    61
+##  5: NCG_00676   66   78 112    38    46    92    28    32    20
+##  6: NCG_00790 5156 2204 121    19    37    92  5137  2167    29
+##  7: NCG_00819   68   76 134    30    41   100    38    35    34
+##  8: NCG_00840   78   92 157    44    52   115    34    40    42
+##  9: NCG_00851 1151  859 141    28    51   102  1123   808    39
+## 10: NCG_00857   59   75 119    10    15    81    49    60    38
+## 11: NCG_00976   46   58 114    25    37    93    21    21    21
+## 12: NCG_01023   59   95 143    32    60   113    27    35    30
+## 13: NCG_01043   73   94 128    40    64   105    33    30    23
+## 14: NCG_01076   36   57 105     7    22    78    29    35    27
+## 15: NCG_01077  135  157 230   103   121   184    32    36    46
+## 16: NCG_01117   95  101 154    72    78   129    23    23    25
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
 
-
-
-\input{tables-wgsCallBySbj.tex}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
@@ -399,15 +491,25 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \hlstd{pmLst}\hlopt{$}\hlstd{edSubDel} \hlkwb{<-} \hlkwd{with}\hlstd{(wgs[}\hlopt{!}\hlkwd{grepl}\hlstd{(}\hlstr{"790|851"}\hlstd{, subject)],}
                        \hlkwd{evalPred}\hlstd{(edDel, wgDel))}
 \hlstd{predMetrics} \hlkwb{<-} \hlkwd{as.data.table}\hlstd{(}\hlkwd{do.call}\hlstd{(rbind, pmLst),} \hlkwc{keep.rownames} \hlstd{=} \hlstr{"PredSet"}\hlstd{)}
+\hlstd{predMetrics}
 \end{alltt}
+\begin{verbatim}
+##      PredSet   MCC   TPR   FDR    PPV BalAcc
+##  1:       mc 0.185 0.335 0.897 0.1030  0.666
+##  2:       ed 0.263 0.363 0.809 0.1910  0.681
+##  3:    mcSub 0.487 0.345 0.311 0.6890  0.672
+##  4:    edSub 0.482 0.378 0.383 0.6170  0.689
+##  5:    mcDup 0.396 0.236 0.334 0.6660  0.618
+##  6:    edDup 0.347 0.240 0.496 0.5040  0.620
+##  7: mcSubDup 0.404 0.246 0.333 0.6670  0.623
+##  8: edSubDup 0.384 0.266 0.446 0.5540  0.633
+##  9:    mcDel 0.180 0.639 0.949 0.0509  0.818
+## 10:    edDel 0.219 0.558 0.914 0.0861  0.778
+## 11: mcSubDel 0.683 0.661 0.294 0.7060  0.830
+## 12: edSubDel 0.541 0.554 0.471 0.5290  0.777
+\end{verbatim}
 \end{kframe}
 \end{knitrout}
-
-
-
-\input{tables-predMetrics.tex}
-
-
 
 \newpage
 \begin{knitrout}
@@ -440,12 +542,27 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \end{kframe}
 \end{knitrout}
 
-\begin{figure}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{par}\hlstd{(}\hlkwc{mar} \hlstd{=} \hlkwd{rep}\hlstd{(}\hlnum{0}\hlstd{,} \hlnum{4}\hlstd{))}
+\hlkwd{plot.new}\hlstd{()}
+\hlkwd{legend}\hlstd{(}\hlkwc{x} \hlstd{=} \hlstr{"center"}\hlstd{,}
+       \hlkwc{legend} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"MC"}\hlstd{,} \hlstr{"ED"}\hlstd{,} \hlstr{"WG"}\hlstd{),}
+       \hlkwc{fill} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"#E9E9E9"}\hlstd{,} \hlstr{"#7F7FC4"}\hlstd{,} \hlstr{"#FFC57F"}\hlstd{),}
+       \hlkwc{horiz} \hlstd{=} \hlnum{TRUE}\hlstd{,}
+       \hlkwc{bty} \hlstd{=} \hlstr{"n"}\hlstd{)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\begin{figure}[H]
   \centering
   \includegraphics[]{figures-vennDiag-1.pdf}%
   \includegraphics[]{figures-vennDiag-2.pdf}
   \includegraphics[]{figures-vennDiag-3.pdf}%
   \includegraphics[]{figures-vennDiag-4.pdf}
+  \includegraphics[]{figures-vennDiagLgnd-1.pdf}
   \caption{(A-B) included in manuscript; (C-D) show the concordance of duplications and deletions for the whole WGS pool. mcCNV calls in gray; ExomeDepth calls in blue; ERDS/cnvpytor calls in orange.}
 \end{figure}
 
