@@ -407,12 +407,14 @@ pltSubjectStatByPool <- function(stat,
 #' @title Plot alpha0 estimates by pool
 #' @description Plot alpha0 estimates by pool
 #' @param a0tbl data.table containing alpha0 values and other summary info
+#' @param mcCol color for multiplexed capture
+#' @param icCol color for independent capture
 #' @import data.table
 #' @import graphics
 #' @import dlfUtils
 #' @export
 
-pltAlpha0 <- function(a0tbl) {
+pltAlpha0 <- function(a0tbl, mcCol = "darkorange", icCol = "darkblue") {
   par(mar = c(4, 4.5, 2, 1) + 0.1)
   plot.new()
   plot.window(xlim = range(a0tbl[ , c(mnCount, mxCount)]),
@@ -422,11 +424,11 @@ pltAlpha0 <- function(a0tbl) {
         lines(x = c(mnCount, mxCount),
               y = c(aMn, aMn),
               lwd = 1.5,
-              col = ifelse(mc, "darkorange", "darkblue")),
+              col = ifelse(mc, mcCol, icCol)),
         by = pool]
   points(aMn ~ mdCount, data = a0tbl,
          pch = ifelse(idt, 15, 17),
-         col = ifelse(mc, "darkorange", "darkblue"))
+         col = ifelse(mc, mcCol, icCol))
   axis(side = 1)
   axis(side = 2)
   title(ylab = expression(hat(alpha)[0]/N),
@@ -435,7 +437,7 @@ pltAlpha0 <- function(a0tbl) {
          xjust = 0.5,
          legend = c("AGL", "IDT", "MC", "IC"),
          lwd = c(NA, NA, 3, 3),
-         col = c("black", "black", "darkorange", "darkblue"),
+         col = c("black", "black", mcCol, icCol),
          pch = c(17, 15, NA, NA),
          horiz = TRUE,
          bty = "n",

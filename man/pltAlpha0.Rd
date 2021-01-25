@@ -4,10 +4,14 @@
 \alias{pltAlpha0}
 \title{Plot alpha0 estimates by pool}
 \usage{
-pltAlpha0(a0tbl)
+pltAlpha0(a0tbl, mcCol = "darkorange", icCol = "darkblue")
 }
 \arguments{
 \item{a0tbl}{data.table containing alpha0 values and other summary info}
+
+\item{mcCol}{color for multiplexed capture}
+
+\item{icCol}{color for independent capture}
 }
 \description{
 Plot alpha0 estimates by pool
