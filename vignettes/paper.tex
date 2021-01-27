@@ -374,7 +374,7 @@ Confirmation testing for the tens to thousands of predicted variants from the ex
 \subsection{Exome sequencing}
 
 We performed sequencing on human samples of purified DNA obtained from the Wilhelmsen laboratory collection, the NCGENES cohort \cite{foreman:2013aa}, and the Coriell Institute in compliance with all guidelines and regulations under the supervision of the UNC Institutional Review Board.
-All research participants, or participants' guardians when applicable, received appropriate counseling and consented to participating in this research.
+All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.
 We also utilized existing read-level data from the NCGENES \cite{foreman:2013aa} project.
 We compared the performance of two capture platforms: (1) Agilent SureSelect XT2 (multiplexed capture)/Agilent SureSelect XT (independent capture); (2) Integrated DNA Technologies (IDT) xGen Lockdown Probes.
 We utilized Human All Exome v4 baits (Agilent) and Exome Research Panel v1 baits (IDT).
@@ -478,7 +478,7 @@ Initialize by setting $\hat{s}_{ij} = 1$ for all $i,j$. Then,
 
 \section*{Ethics approval and consent to participate}%% if any
 All human data were collected following all guidelines and regulations with the approval and under the supervision of the UNC Institutional Review Board.
-All research participants, or participants' guardians when applicable, received appropriate counseling and consented to participating in this research.
+All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.
 No identifying information or sequence level data are included in this manuscript or accompanying data.
 
 \section*{Consent for publication}
@@ -555,7 +555,7 @@ We thank Jim Evans for taking a break from beekeeping to provide thoughtful comm
 \section*{Tables}
 
 % latex table generated in R 4.0.0 by xtable 1.8-4 package
-% Mon Jan 25 16:36:26 2021
+% Wed Jan 27 11:11:14 2021
 \begin{table}[h!]
 \centering
 \caption{Summary of whole-exome sequencing. `pool' indicates the name of the pool of samples; `capture' indicates the capture platform for the pool; `N' gives the number of samples in the pool; `medExon' gives the pool median of the subject median mapped molecule count per exon; `medTotal' gives the median by pool of total mapped molecule counts per subject; `minTotal' and `maxTotal' give the minimum \& maximum total mapped molecules; `rsdTotal' gives the relative standard deviation (SD/mean*100) of total mapped molecules. $\dagger$ indicates captures were performed independently on each sample within the pool, otherwise captures were multiplexed across all samples within the pool.} 
@@ -579,7 +579,7 @@ IDT-IC$^\dagger$ & IDT & 16 & \num{143} & \num{55149058} & \num{37453015} & \num
 
 
 % latex table generated in R 4.0.0 by xtable 1.8-4 package
-% Mon Jan 25 16:36:26 2021
+% Wed Jan 27 11:11:14 2021
 \begin{table}[h!]
 \centering
 \caption{Number of CNV calls by subject and algorithm for the `WGS' pool. `MC' indicates the mcCNV algorithm; `ED' indicates the ExomeDepth algorithm; `WG' indicates the overlap of ERDS/cnvpytor calls from matched whole-genome sequencing. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis.} 
@@ -609,7 +609,7 @@ NCG\_00012 & 90 & 106 & 143 & 61 & 73 & 121 & 29 & 33 & 22 \\
 
 
 % latex table generated in R 4.0.0 by xtable 1.8-4 package
-% Mon Jan 25 16:36:27 2021
+% Wed Jan 27 11:11:14 2021
 \begin{table}[h!]
 \centering
 \caption{mcCNV (MC)/ExomeDepth (ED) calls for `WGS' pool (used as prediction) versus the ERDS/cnvpytor calls from matched genome sequencing (used as truth). Calls are subdivided by duplications (DUP) and deletions (DEL). `Full' gives performance across the full pool; `Sub' gives the performance excluding the poorly correlated samples NCG\_00790 and NCG\_00851 (gray rows). `MCC' is Matthew's correlation coefficient, `TPR' is true positive rate/sensitivity, `FDR' is false discovery rate, `PPV' is positive predictive value, `BalAcc' is balanced accuracy. Exons with any overlap of the repetitive and low-complexity regions, as defined in the Trost et al. manuscript, omitted from analysis.} 

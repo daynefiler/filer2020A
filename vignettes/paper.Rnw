@@ -356,7 +356,7 @@ Confirmation testing for the tens to thousands of predicted variants from the ex
 \subsection{Exome sequencing}
 
 We performed sequencing on human samples of purified DNA obtained from the Wilhelmsen laboratory collection, the NCGENES cohort \cite{foreman:2013aa}, and the Coriell Institute in compliance with all guidelines and regulations under the supervision of the UNC Institutional Review Board.
-All research participants, or participants' guardians when applicable, received appropriate counseling and consented to participating in this research.
+All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.
 We also utilized existing read-level data from the NCGENES \cite{foreman:2013aa} project.
 We compared the performance of two capture platforms: (1) Agilent SureSelect XT2 (multiplexed capture)/Agilent SureSelect XT (independent capture); (2) Integrated DNA Technologies (IDT) xGen Lockdown Probes.
 We utilized Human All Exome v4 baits (Agilent) and Exome Research Panel v1 baits (IDT).
@@ -460,7 +460,7 @@ Initialize by setting $\hat{s}_{ij} = 1$ for all $i,j$. Then,
 
 \section*{Ethics approval and consent to participate}%% if any
 All human data were collected following all guidelines and regulations with the approval and under the supervision of the UNC Institutional Review Board.
-All research participants, or participants' guardians when applicable, received appropriate counseling and consented to participating in this research.
+All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.
 No identifying information or sequence level data are included in this manuscript or accompanying data.
 
 \section*{Consent for publication}
