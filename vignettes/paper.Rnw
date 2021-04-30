@@ -184,7 +184,7 @@ Additionally, the authors demonstrated 627/2844 (22\%) of identified CNVs spanne
 Targeted sequencing requires capturing the desired loci (e.g. exons) using sequence-specific oligonucleotide baits.
 Even when carefully designed and balanced, the differential efficiency of baits leads to variable read-depth across the exome.
 The GC content and length of targeted fragments contribute to the observed variable read-depth \cite{benjamini:2012aa}; most ES analysis platforms incorporate a correction for GC content and exon length \cite{kadalayil:2015aa}.
-The variable read-depth in ES precludes the single-sample window-smoothing approaches successfully applied in GS data \cite{chiang:2009aa}\added{, e.g. Control-FREEC \cite{boeva:2012aa}, CONDEL \cite{yuan:2020aa}, CNV\_IFTV \cite{yuan:2019aa}, CNVnator \cite{abyzov:2011aa}, ERDS \cite{zhu:2012aa}}; therefore we must rely on comparative analysis for interrogating copy number.
+The variable read-depth in ES precludes the single-sample window-smoothing approaches successfully applied in GS data \cite{chiang:2009aa}, e.g. Control-FREEC \cite{boeva:2012aa}, CONDEL \cite{yuan:2020aa}, CNV\_IFTV \cite{yuan:2019aa}, CNVnator \cite{abyzov:2011aa}, ERDS \cite{zhu:2012aa}; therefore we must rely on comparative analysis for interrogating copy number.
 \added{Comparative analysis requires a set of reference controls; we presume the reference controls do not have the same rare CNVs as the test subject and accept we will not identify common CNVs.}
 
 Comparing multiple samples, each captured independently, compounds the variable read-depth problem.
@@ -297,7 +297,7 @@ We provide the full comparison by variant size in supplemental materials.}
 The medical genetics community still lacks robust exome-wide information about the prevalence of small (exon-level) variants.
 Others have established the reliability and cost-efficiency of pre-capture multiplexing \cite{ramos:2012aa,wesolowska:2011aa,shearer:2012aa,neiman:2012aa,rohland:2012aa}, and most commercial exome capture platforms have protocols for pre-capture multiplexing.
 Here, we demonstrate the reduction in inter-sample variance with pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
-Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing\added{ reduces capture efficiency \cite{trost:2018aa} and} requires waiting to fill a pool and may delay results.
+Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing reduces capture efficiency \cite{trost:2018aa} and requires waiting to fill a pool and may delay results.
 While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase patients' diagnostic yield.
 
 Multiplexed capture is not without limitations.
@@ -335,10 +335,10 @@ While the mcCNV approach does not define the variant breakpoints, the resulting 
 
 The simulation study emphasizes the importance of sequencing depth (in terms of absolute molecules).
 We can collect increased basepair coverage for less money by sequencing longer reads (e.g. 2x150 versus 2x50), but doing so decreases power for depth-based CNV calling.
-\replaced{The sequencing depth in clinical exomes varies widely between efforts, with average depths in the Clinical Sequencing Exploratory Research (CSER) consortium ranging from 63-233x \cite{green:2016aa}; others have suggested an ideal depth of 120x for SNP/indel calling \cite{kim:2015ab}.}{Typically, exome sequencing targets 30-50x coverage to ensure most targets have sufficient coverage for accurate basepair calling.}
+The sequencing depth in clinical exomes varies widely between efforts, with average depths in the Clinical Sequencing Exploratory Research (CSER) consortium ranging from 63-233x \cite{green:2016aa}; others have suggested an ideal depth of 120x for SNP/indel calling \cite{kim:2015ab}.
 We demonstrate the need for \deleted{much }deeper sequencing if we wish to establish exon-level variants.
 
-Additionally, we recognize the increased capture efficiency in hard-to-capture regions using independent captures\added{; multiplexing the capture step reduces the capture efficiency by 20-30\% \cite{trost:2018aa}}.
+Additionally, we recognize the increased capture efficiency in hard-to-capture regions using independent captures; multiplexing the capture step reduces the capture efficiency by 20-30\% \cite{trost:2018aa}.
 We feel the variance benefit of multiplexed capture outweighs the \added{decrease in capture efficiency.
 Without an accurate estimate of the disease burden caused by exon-level CNVs, we cannot comment on the cost-benefit of multiplexed capture with adequate sequencing depth.
 Until greater information exists, we advocate for multiplexed capture and deep sequencing to identify small CNVs.}
