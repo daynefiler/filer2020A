@@ -327,6 +327,59 @@ wgsCallBySbj <- wgs[ , lapply(.SD, sum), .SDcols = is.logical, by = subject]
 wgsCallBySbj
 @
 
+<<callByVarLen,results='markup'>>=
+wgs[ ,
+    c("mcRunID", "edRunID", "wgRunID") :=
+      .(paste(subject, seqnames, rleid(mc), sep = ":"),
+        paste(subject, seqnames, rleid(ed), sep = ":"),
+        paste(subject, seqnames, rleid(wg), sep = ":")),
+    by = .(subject, seqnames)]
+wgs[!(mc), mcRunID := NA_character_]
+wgs[!(ed), edRunID := NA_character_]
+wgs[!(wg), wgRunID := NA_character_]
+wgs[(mc), mcVarLen := .N, by = .(mcRunID)]
+wgs[(ed), edVarLen := .N, by = .(edRunID)]
+wgs[(wg), wgVarLen := .N, by = .(wgRunID)]
+
+## Count number of variants by variant length for each algorithm
+mergeAll <- function(x, y) merge(x, y, all = TRUE)
+wgs[!subject %in% c("NCG_00790", "NCG_00851"), {
+  lst <- list(.SD[!is.na(mcVarLen),
+                  .(mc = length(unique(mcRunID))),
+                  by = .(varLen = pmin(mcVarLen, 10))],
+              .SD[!is.na(edVarLen),
+                  .(ed = length(unique(edRunID))),
+                  by = .(varLen = pmin(edVarLen, 10))],
+              .SD[!is.na(wgVarLen),
+                  .(wg = length(unique(wgRunID))),
+                  by = .(varLen = pmin(wgVarLen, 10))])
+  Reduce(mergeAll, lst)
+}]
+
+calcOverlap <- function(vl, exclude = c("NCG_00790", "NCG_00851")) {
+  mc <- wgs[!subject %in% exclude][pmin(mcVarLen, 10) == vl]
+  mc <- mc[ , .(wg = any(wg), ed = any(ed)), by = .(mcRunID)]
+  mc <- mc[ , .(vl = vl, prd = "mc", wg = sum(wg)/.N, ed = sum(ed)/.N)]
+  mc <- melt(mc, id.vars = c("vl", "prd"))
+
+  ed <- wgs[!subject %in% exclude][pmin(edVarLen, 10) == vl]
+  ed <- ed[ , .(wg = any(wg), mc = any(mc)), by = .(edRunID)]
+  ed <- ed[ , .(vl = vl, prd = "ed", wg = sum(wg)/.N, mc = sum(mc)/.N)]
+  ed <- melt(ed, id.vars = c("vl", "prd"))
+
+  wg <- wgs[!subject %in% exclude][pmin(wgVarLen, 10) == vl]
+  wg <- wg[ , .(mc = any(mc), ed = any(ed)), by = .(wgRunID)]
+  wg <- wg[ , .(vl = vl, prd = "wg", mc = sum(mc)/.N, ed = sum(ed)/.N)]
+  wg <- melt(wg, id.vars = c("vl", "prd"))
+
+  res <- rbindlist(list(mc, ed, wg))
+  res[ , .(vl, prd, tst = as.character(variable), pct = round(value, 3))][]
+}
+## Percentage of calls predicted (prd) found in the other algorithms (tst)
+## by variant length (vl)
+callByVarLen <- rbindlist(lapply(1:10, calcOverlap))[order(vl, prd, tst)]
+cbind(callByVarLen[1:30], callByVarLen[31:60])
+@
 
 <<predMetrics, results='markup'>>=
 pmLst <- list()

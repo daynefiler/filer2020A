@@ -469,6 +469,111 @@ We then calculate interval statistics (mean, variance, etc.) across the pools.
 \end{kframe}
 \end{knitrout}
 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{wgs[ ,}
+    \hlkwd{c}\hlstd{(}\hlstr{"mcRunID"}\hlstd{,} \hlstr{"edRunID"}\hlstd{,} \hlstr{"wgRunID"}\hlstd{)} \hlkwb{:=}
+      \hlkwd{.}\hlstd{(}\hlkwd{paste}\hlstd{(subject, seqnames,} \hlkwd{rleid}\hlstd{(mc),} \hlkwc{sep} \hlstd{=} \hlstr{":"}\hlstd{),}
+        \hlkwd{paste}\hlstd{(subject, seqnames,} \hlkwd{rleid}\hlstd{(ed),} \hlkwc{sep} \hlstd{=} \hlstr{":"}\hlstd{),}
+        \hlkwd{paste}\hlstd{(subject, seqnames,} \hlkwd{rleid}\hlstd{(wg),} \hlkwc{sep} \hlstd{=} \hlstr{":"}\hlstd{)),}
+    \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(subject, seqnames)]}
+\hlstd{wgs[}\hlopt{!}\hlstd{(mc), mcRunID} \hlkwb{:=} \hlnum{NA_character_}\hlstd{]}
+\hlstd{wgs[}\hlopt{!}\hlstd{(ed), edRunID} \hlkwb{:=} \hlnum{NA_character_}\hlstd{]}
+\hlstd{wgs[}\hlopt{!}\hlstd{(wg), wgRunID} \hlkwb{:=} \hlnum{NA_character_}\hlstd{]}
+\hlstd{wgs[(mc), mcVarLen} \hlkwb{:=} \hlstd{.N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(mcRunID)]}
+\hlstd{wgs[(ed), edVarLen} \hlkwb{:=} \hlstd{.N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(edRunID)]}
+\hlstd{wgs[(wg), wgVarLen} \hlkwb{:=} \hlstd{.N,} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(wgRunID)]}
+
+\hlcom{## Count number of variants by variant length for each algorithm}
+\hlstd{mergeAll} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{x}\hlstd{,} \hlkwc{y}\hlstd{)} \hlkwd{merge}\hlstd{(x, y,} \hlkwc{all} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlstd{wgs[}\hlopt{!}\hlstd{subject} \hlopt{%in%} \hlkwd{c}\hlstd{(}\hlstr{"NCG_00790"}\hlstd{,} \hlstr{"NCG_00851"}\hlstd{), \{}
+  \hlstd{lst} \hlkwb{<-} \hlkwd{list}\hlstd{(.SD[}\hlopt{!}\hlkwd{is.na}\hlstd{(mcVarLen),}
+                  \hlkwd{.}\hlstd{(}\hlkwc{mc} \hlstd{=} \hlkwd{length}\hlstd{(}\hlkwd{unique}\hlstd{(mcRunID))),}
+                  \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(}\hlkwc{varLen} \hlstd{=} \hlkwd{pmin}\hlstd{(mcVarLen,} \hlnum{10}\hlstd{))],}
+              \hlstd{.SD[}\hlopt{!}\hlkwd{is.na}\hlstd{(edVarLen),}
+                  \hlkwd{.}\hlstd{(}\hlkwc{ed} \hlstd{=} \hlkwd{length}\hlstd{(}\hlkwd{unique}\hlstd{(edRunID))),}
+                  \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(}\hlkwc{varLen} \hlstd{=} \hlkwd{pmin}\hlstd{(edVarLen,} \hlnum{10}\hlstd{))],}
+              \hlstd{.SD[}\hlopt{!}\hlkwd{is.na}\hlstd{(wgVarLen),}
+                  \hlkwd{.}\hlstd{(}\hlkwc{wg} \hlstd{=} \hlkwd{length}\hlstd{(}\hlkwd{unique}\hlstd{(wgRunID))),}
+                  \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(}\hlkwc{varLen} \hlstd{=} \hlkwd{pmin}\hlstd{(wgVarLen,} \hlnum{10}\hlstd{))])}
+  \hlkwd{Reduce}\hlstd{(mergeAll, lst)}
+\hlstd{\}]}
+\end{alltt}
+\begin{verbatim}
+##     varLen  mc  ed  wg
+##  1:      1 297 179 138
+##  2:      2  78  78  78
+##  3:      3  57  71 102
+##  4:      4  14  17  36
+##  5:      5  15  17  30
+##  6:      6  12  20  15
+##  7:      7   5   5   4
+##  8:      8   4   6  25
+##  9:      9   2   1  15
+## 10:     10   6  13  42
+\end{verbatim}
+\begin{alltt}
+\hlstd{calcOverlap} \hlkwb{<-} \hlkwa{function}\hlstd{(}\hlkwc{vl}\hlstd{,} \hlkwc{exclude} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"NCG_00790"}\hlstd{,} \hlstr{"NCG_00851"}\hlstd{)) \{}
+  \hlstd{mc} \hlkwb{<-} \hlstd{wgs[}\hlopt{!}\hlstd{subject} \hlopt{%in%} \hlstd{exclude][}\hlkwd{pmin}\hlstd{(mcVarLen,} \hlnum{10}\hlstd{)} \hlopt{==} \hlstd{vl]}
+  \hlstd{mc} \hlkwb{<-} \hlstd{mc[ ,} \hlkwd{.}\hlstd{(}\hlkwc{wg} \hlstd{=} \hlkwd{any}\hlstd{(wg),} \hlkwc{ed} \hlstd{=} \hlkwd{any}\hlstd{(ed)),} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(mcRunID)]}
+  \hlstd{mc} \hlkwb{<-} \hlstd{mc[ ,} \hlkwd{.}\hlstd{(}\hlkwc{vl} \hlstd{= vl,} \hlkwc{prd} \hlstd{=} \hlstr{"mc"}\hlstd{,} \hlkwc{wg} \hlstd{=} \hlkwd{sum}\hlstd{(wg)}\hlopt{/}\hlstd{.N,} \hlkwc{ed} \hlstd{=} \hlkwd{sum}\hlstd{(ed)}\hlopt{/}\hlstd{.N)]}
+  \hlstd{mc} \hlkwb{<-} \hlkwd{melt}\hlstd{(mc,} \hlkwc{id.vars} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"vl"}\hlstd{,} \hlstr{"prd"}\hlstd{))}
+
+  \hlstd{ed} \hlkwb{<-} \hlstd{wgs[}\hlopt{!}\hlstd{subject} \hlopt{%in%} \hlstd{exclude][}\hlkwd{pmin}\hlstd{(edVarLen,} \hlnum{10}\hlstd{)} \hlopt{==} \hlstd{vl]}
+  \hlstd{ed} \hlkwb{<-} \hlstd{ed[ ,} \hlkwd{.}\hlstd{(}\hlkwc{wg} \hlstd{=} \hlkwd{any}\hlstd{(wg),} \hlkwc{mc} \hlstd{=} \hlkwd{any}\hlstd{(mc)),} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(edRunID)]}
+  \hlstd{ed} \hlkwb{<-} \hlstd{ed[ ,} \hlkwd{.}\hlstd{(}\hlkwc{vl} \hlstd{= vl,} \hlkwc{prd} \hlstd{=} \hlstr{"ed"}\hlstd{,} \hlkwc{wg} \hlstd{=} \hlkwd{sum}\hlstd{(wg)}\hlopt{/}\hlstd{.N,} \hlkwc{mc} \hlstd{=} \hlkwd{sum}\hlstd{(mc)}\hlopt{/}\hlstd{.N)]}
+  \hlstd{ed} \hlkwb{<-} \hlkwd{melt}\hlstd{(ed,} \hlkwc{id.vars} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"vl"}\hlstd{,} \hlstr{"prd"}\hlstd{))}
+
+  \hlstd{wg} \hlkwb{<-} \hlstd{wgs[}\hlopt{!}\hlstd{subject} \hlopt{%in%} \hlstd{exclude][}\hlkwd{pmin}\hlstd{(wgVarLen,} \hlnum{10}\hlstd{)} \hlopt{==} \hlstd{vl]}
+  \hlstd{wg} \hlkwb{<-} \hlstd{wg[ ,} \hlkwd{.}\hlstd{(}\hlkwc{mc} \hlstd{=} \hlkwd{any}\hlstd{(mc),} \hlkwc{ed} \hlstd{=} \hlkwd{any}\hlstd{(ed)),} \hlkwc{by} \hlstd{=} \hlkwd{.}\hlstd{(wgRunID)]}
+  \hlstd{wg} \hlkwb{<-} \hlstd{wg[ ,} \hlkwd{.}\hlstd{(}\hlkwc{vl} \hlstd{= vl,} \hlkwc{prd} \hlstd{=} \hlstr{"wg"}\hlstd{,} \hlkwc{mc} \hlstd{=} \hlkwd{sum}\hlstd{(mc)}\hlopt{/}\hlstd{.N,} \hlkwc{ed} \hlstd{=} \hlkwd{sum}\hlstd{(ed)}\hlopt{/}\hlstd{.N)]}
+  \hlstd{wg} \hlkwb{<-} \hlkwd{melt}\hlstd{(wg,} \hlkwc{id.vars} \hlstd{=} \hlkwd{c}\hlstd{(}\hlstr{"vl"}\hlstd{,} \hlstr{"prd"}\hlstd{))}
+
+  \hlstd{res} \hlkwb{<-} \hlkwd{rbindlist}\hlstd{(}\hlkwd{list}\hlstd{(mc, ed, wg))}
+  \hlstd{res[ ,} \hlkwd{.}\hlstd{(vl, prd,} \hlkwc{tst} \hlstd{=} \hlkwd{as.character}\hlstd{(variable),} \hlkwc{pct} \hlstd{=} \hlkwd{round}\hlstd{(value,} \hlnum{3}\hlstd{))][]}
+\hlstd{\}}
+\hlcom{## Percentage of calls predicted (prd) found in the other algorithms (tst)}
+\hlcom{## by variant length (vl)}
+\hlstd{callByVarLen} \hlkwb{<-} \hlkwd{rbindlist}\hlstd{(}\hlkwd{lapply}\hlstd{(}\hlnum{1}\hlopt{:}\hlnum{10}\hlstd{, calcOverlap))[}\hlkwd{order}\hlstd{(vl, prd, tst)]}
+\hlkwd{cbind}\hlstd{(callByVarLen[}\hlnum{1}\hlopt{:}\hlnum{30}\hlstd{], callByVarLen[}\hlnum{31}\hlopt{:}\hlnum{60}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+##     vl prd tst   pct vl prd tst   pct
+##  1:  1  ed  mc 0.732  6  ed  mc 1.000
+##  2:  1  ed  wg 0.341  6  ed  wg 0.650
+##  3:  1  mc  ed 0.700  6  mc  ed 1.000
+##  4:  1  mc  wg 0.374  6  mc  wg 0.917
+##  5:  1  wg  ed 0.391  6  wg  ed 0.800
+##  6:  1  wg  mc 0.478  6  wg  mc 1.000
+##  7:  2  ed  mc 0.808  7  ed  mc 0.800
+##  8:  2  ed  wg 0.577  7  ed  wg 0.600
+##  9:  2  mc  ed 0.885  7  mc  ed 1.000
+## 10:  2  mc  wg 0.615  7  mc  wg 1.000
+## 11:  2  wg  ed 0.654  7  wg  ed 0.250
+## 12:  2  wg  mc 0.538  7  wg  mc 0.250
+## 13:  3  ed  mc 0.831  8  ed  mc 1.000
+## 14:  3  ed  wg 0.662  8  ed  wg 0.500
+## 15:  3  mc  ed 0.912  8  mc  ed 1.000
+## 16:  3  mc  wg 0.737  8  mc  wg 1.000
+## 17:  3  wg  ed 0.392  8  wg  ed 0.240
+## 18:  3  wg  mc 0.451  8  wg  mc 0.160
+## 19:  4  ed  mc 1.000  9  ed  mc 1.000
+## 20:  4  ed  wg 0.471  9  ed  wg 1.000
+## 21:  4  mc  ed 1.000  9  mc  ed 1.000
+## 22:  4  mc  wg 1.000  9  mc  wg 1.000
+## 23:  4  wg  ed 0.278  9  wg  ed 0.067
+## 24:  4  wg  mc 0.444  9  wg  mc 0.067
+## 25:  5  ed  mc 0.882 10  ed  mc 1.000
+## 26:  5  ed  wg 0.353 10  ed  wg 0.846
+## 27:  5  mc  ed 1.000 10  mc  ed 1.000
+## 28:  5  mc  wg 1.000 10  mc  wg 1.000
+## 29:  5  wg  ed 0.433 10  wg  ed 0.310
+## 30:  5  wg  mc 0.433 10  wg  mc 0.310
+##     vl prd tst   pct vl prd tst   pct
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}

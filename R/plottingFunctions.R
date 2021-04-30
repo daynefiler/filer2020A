@@ -175,7 +175,7 @@ pltMnVrCont <- function(dat,
   yticks <- axisTicks(usr = log10(mvr[3:4]), log = TRUE)
   axis(side = 1, at = log10(xticks), labels = xticks)
   axis(side = 2, at = log10(yticks), labels = yticks)
-  title(xlab = "Mean", ylab = "Variance")
+  title(xlab = "Mean per exon", ylab = "Variance per exon")
   par(mar = c(0.1, 4, 0.1, 0.1))
   abline(0, 1, lty = "dashed", col = "gray30", lwd = 2)
   plot.new()
