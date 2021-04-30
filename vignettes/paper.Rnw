@@ -15,6 +15,13 @@
 \usepackage[utf8]{inputenc}
 \usepackage{url}
 \sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+\usepackage[final]{changes}
+
+% changes options
+\makeatletter
+\@namedef{Changes@AuthorColor}{red}
+\colorlet{Changes@Color}{red}
+\makeatother
 
 %%% Put your definitions there:
 \startlocaldefs
@@ -131,14 +138,16 @@ As exome sequencing (ES) integrates into clinical practice, we should make every
 Copy-number variation can lead to Mendelian disorders, but small copy-number variants (CNVs) often get overlooked or obscured by under-powered data collection.
 Many groups have developed methodology for detecting CNVs from ES, but existing methods often perform poorly for small CNVs and rely on large numbers of samples not always available to clinical laboratories.
 Furthermore, methods often rely on Bayesian approaches requiring user-defined priors in the setting of insufficient prior knowledge.
-This report first demonstrates the benefit of multiplexed exome capture, then presents a novel detection algorithm built around multiplexed capture.
+This report first demonstrates the benefit of multiplexed exome capture\added{ (pooling samples prior to capture)}, then presents a novel detection algorithm\added{, mcCNV (``multiplexed capture CNV''),} built around multiplexed capture.
 \parttitle{Results}
-We demonstrate: (1) pooling samples prior to capture (multiplexed capture) reduces inter-sample variance; (2) our mcCNV method, a novel depth-based algorithm for detecting CNVs from multiplexed-capture ES data, improves the detection of small CNVs.
+We demonstrate: (1) \deleted{pooling samples prior to capture (}multiplexed capture reduces inter-sample variance\deleted{)}; (2) our mcCNV method, a novel depth-based algorithm for detecting CNVs from multiplexed\replaced{ }{-}capture ES data, improves the detection of small CNVs.
 We contrast our novel approach, agnostic to prior information, with the the commonly-used ExomeDepth.
+\added{In a simulation study mcCNV demonstrated a favorable false discovery rate (FDR).}
 When compared to calls made from matched genome sequencing, we find the mcCNV algorithm performs comparably to ExomeDepth.
 \parttitle{Conclusions}
 Implementing multiplexed capture increases power to detect single-exon CNVs.
-The novel mcCNV algorithm may provide more specific results than ExomeDepth.
+The novel mcCNV algorithm may provide \replaced{a more favorable FDR}{more specific results} than ExomeDepth.
+\added{The greatest benefits of our approach derive from (1) not requiring a database of reference samples and (2) not requiring prior information about the prevalance or size of variants.}
 \end{abstract}
 
 \begin{keyword}
@@ -164,9 +173,10 @@ Technologies, e.g. microarray, exist for reliably detecting large (greater than 
 Over the last decade, the availability short-read DNA sequencing compelled numerous efforts to identify and characterize smaller variants.
 Sequencing cost, data burden, and the problem of classifying intronic and non-coding variants have led to exome sequencing (ES) as the preferred clinical sequencing modality.
 ES analysis most often focuses on identifying pathogenic single-nucleotide variants and insertion/deletions.
-CNV analysis has demonstrated limited improvement in diagnostic yield \cite{marchuk:2018aa}, but existing data/analysis lacks the power to detect exon-level variation \cite{retterer:2015aa,yao:2017aa}.
+CNV analysis \replaced{can provide modest}{has demonstrated limited} improvement in diagnostic yield \cite{marchuk:2018aa}, but existing data/analysis lacks the power to detect exon-level variation \cite{retterer:2015aa,yao:2017aa}.
+\added{Poor detection power to date obscures the true diagnostic potential of small CNVs.}
 
-Current analytic methodologies adequately detect large CNVs but require large amounts of data and lack resolution for intragenic exon-level variation \cite{plagnol:2012aa,krumm:2012aa,fromer:2012aa,jiang:2015aa}.
+Current analytic methodologies adequately detect large CNVs but require large \replaced{sample sizes (dozens to hundreds)}{amounts of data} and lack resolution for intragenic exon-level variation \cite{plagnol:2012aa,krumm:2012aa,fromer:2012aa,jiang:2015aa}.
 The prevalence and clinical importance of exon-level CNVs remain largely unknown due to inadequate power in ES studies and limited access to clinical genome sequencing data.
 Recent work on a subset of 1507 genes suggests intragenic CNVs account for 1.9\% of total variants but 9.8\% of pathogenic variants \cite{truty:2019aa}.
 Additionally, the authors demonstrated 627/2844 (22\%) of identified CNVs spanned a single (598) or partial (29) exon \cite{truty:2019aa}.
@@ -174,7 +184,8 @@ Additionally, the authors demonstrated 627/2844 (22\%) of identified CNVs spanne
 Targeted sequencing requires capturing the desired loci (e.g. exons) using sequence-specific oligonucleotide baits.
 Even when carefully designed and balanced, the differential efficiency of baits leads to variable read-depth across the exome.
 The GC content and length of targeted fragments contribute to the observed variable read-depth \cite{benjamini:2012aa}; most ES analysis platforms incorporate a correction for GC content and exon length \cite{kadalayil:2015aa}.
-The variable read-depth in ES precludes the single-sample window-smoothing approaches successfully applied in GS data \cite{chiang:2009aa}; therefore we must rely on comparative analysis for interrogating copy number.
+The variable read-depth in ES precludes the single-sample window-smoothing approaches successfully applied in GS data \cite{chiang:2009aa}\added{, e.g. Control-FREEC \cite{boeva:2012aa}, CONDEL \cite{yuan:2020aa}, CNV\_IFTV \cite{yuan:2019aa}, CNVnator \cite{abyzov:2011aa}, ERDS \cite{zhu:2012aa}}; therefore we must rely on comparative analysis for interrogating copy number.
+\added{Comparative analysis requires a set of reference controls; we presume the reference controls do not have the same rare CNVs as the test subject and accept we will not identify common CNVs.}
 
 Comparing multiple samples, each captured independently, compounds the variable read-depth problem.
 The capture probability for each exon correlates between samples but with high variability \cite{plagnol:2012aa}.
@@ -212,7 +223,7 @@ Using multiplexed capture, we sequenced three 16-sample pools and two 8-sample p
 To compare to individually-captured Agilent data, we randomly selected 5 16-sample pools from the NCGENES cohort.
 We subset to exons with at least 5 and no greater than 2000 counts across all samples within a pool for numeric stability.
 We then used a Newton-Raphson algorithm \cite{minka:2000aa} to fit the Dirichlet distribution to each pool; all pools converged to stable estimates.
-With one exception, we found multiplexed capture pools had greater $\alpha_0$ of their independently-captured counterparts (\Cref{fig:alpha0}).
+With one exception, we found multiplexed capture pools had greater $\alpha_0$ \replaced{than}{of} their independently-captured counterparts (\Cref{fig:alpha0}).
 
 The multiplexed pool without decreased inter-sample variance, IDT-MC, had a much larger spread in sequencing depth across the pool (\Cref{tab:poolSummary}, \Cref{fig:alpha0}).
 Looking at the total mapped molecules, the IDT-MC pool had over double the relative standard deviation (\Sexpr{poolTbl[pool == "IDT-MC", rsdTotal]}\%) of any other pool.
@@ -227,7 +238,7 @@ We did, however, observe near-complete reduction in dispersion for the better-ba
 \subsection{Multiplexed capture provides controls for ExomeDepth}
 
 ExomeDepth requires a set of control subjects, summed into a reference vector of counts at each exon.
-ExomeDepth provides functionality to select appropriate controls from a set of subjects, often requiring large numbers of subjects to identify appropriate controls.
+ExomeDepth provides functionality to select appropriate controls from a set of subjects, often requiring \replaced{hundreds}{large numbers} of subjects to identify appropriate controls.
 Smaller research groups and clinical laboratories may struggle to build large databases of exomes, with the difficulty compounded by lot-to-lot variation and regular improvements to capture and sequencing chemistries.
 We wanted to know if the reduced inter-sample variance with multiplexed capture could provide an appropriate control set for ExomeDepth, eliminating the need for large databases of similarly-captured exomes.
 We found the reduced inter-sample variance with multiplexed capture leads to appropriate control selection for ExomeDepth (\Cref{fig:edSelection}).
@@ -238,8 +249,7 @@ When we looked at independently-captured subjects, we found appropriate control 
 However, ExomeDepth only selected \Sexpr{unique(subjectCorr[ , .(subject, pool, propSelected)])[pool == "NCGENES", round(mean(propSelected)*100, 1)]}\% of available samples as controls, on average (\Cref{fig:edSelection}C).
 Similarly, with the independently-captured IDT-IC pool we find low control numbers for most samples.
 While possible to select the same number of controls but exhibit differing dispersion, we observed little difference in the dispersion between independent and multiplexed capture (\Cref{fig:edSelection}B).
-Overall, multiplexed capture provided appropriate controls for most samples tested.
-An adequately-large set of available controls delivered comparable performance.
+Overall, multiplexed capture provided appropriate controls for most samples tested \replaced{and performed comparably to independently-captured controls selected from an adequately-large set of available samples.}{An adequately-large set of available controls delivered comparable performance.}
 
 \subsection{mcCNV \& ExomeDepth perform comparably in a simulation study}
 
@@ -254,7 +264,7 @@ We analyzed each of the 4,000 pools (200 replicates by 20 depths) using our algo
 For the first iteration of ExomeDepth, we used the default values for transition probability ($1/10,000$) and expected variant length (50 kb).
 For the second iteration, we used the true simulated variant prior for the transition probability ($1/1,000$) and an expected variant length of 1 kb.
 As expected, the sensitivity increased, and the false discovery rate decreased as the sequencing depth increased (\Cref{fig:simRes}).
-In both comparisons, mcCNV demonstrated a superior false-discovery rate.
+In both comparisons, mcCNV demonstrated a \replaced{lower}{superior} false-discovery rate.
 When interrogating Matthew's correlation coefficient \cite{matthews:1975aa} and the sensitivity, we found mcCNV had marginal performance over ExomeDepth with default parameters and marginal performance under ExomeDepth with simulation-matched parameters (table of values provided in supplemental materials).
 
 \subsection{mcCNV \& ExomeDepth perform comparably on WGS pool}
@@ -267,7 +277,7 @@ We then compared the exome calls using mcCNV and ExomeDepth to the genome calls 
 Overall, mcCNV predicted the largest number of variants; however, \Sexpr{wgsCallBySbj[ , .(N = c(mcDup, mcDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]}\% of predicted variants were deletions from two samples (NCG\_00790 and NCG\_00851).
 ExomeDepth also predicted a disproportionate number of deletions for NCG\_00790 and NCG\_00851, totaling \Sexpr{wgsCallBySbj[ , .(N = c(edDup, edDel))][ , .(p = N/sum(N))][order(-p), round(cumsum(p)[2]*100, 1)]}\% of calls.
 
-ExomeDepth only selected two and three controls respective for pools NCG 00790 and NCG 0085.
+ExomeDepth only selected two and three controls \deleted{respective} for pools NCG\replaced{\_}{ }00790 and NCG\replaced{\_}{ }0085\added{1, respectively}.
 Furthermore, NCG\_00790 and NCG\_00851 had substantially higher dispersion than the rest of the pool (two outliers in \Cref{fig:edSelection}B).
 
 Recognizing the genome calls do not represent an accurate truth set, we looked at mcCNV and ExomeDepth's ability to predict the genome calls.
@@ -275,6 +285,8 @@ Due to the large number of deletions called for NCG\_00790 and NCG\_00851, both 
 When we excluded NCG\_00790 and NCG\_00851 from the analysis, mcCNV had comparable, uniformly better performance.
 Both algorithms demonstrated greater power to detect deletions.
 \Cref{fig:wgsVenn} shows the call overlap, excluding NCG\_00790 and NCG\_00851, between the three approaches.
+\added{Again excluding the two samples, we looked at the single-exon calls; \Sexpr{callByVarLen[vl == 1 & prd == "mc" & tst == "wg", pct*100]}\% of mcCNV single-exon calls and \Sexpr{callByVarLen[vl == 1 & prd == "ed" & tst == "wg", pct*100]}\% of ExomeDepth single-exon calls overlapped with the genome calls.
+We provide the full comparison by variant size in supplemental materials.}
 
 %%----------------------------------------------------------------------------%%
 %% Discussion
@@ -285,7 +297,7 @@ Both algorithms demonstrated greater power to detect deletions.
 The medical genetics community still lacks robust exome-wide information about the prevalence of small (exon-level) variants.
 Others have established the reliability and cost-efficiency of pre-capture multiplexing \cite{ramos:2012aa,wesolowska:2011aa,shearer:2012aa,neiman:2012aa,rohland:2012aa}, and most commercial exome capture platforms have protocols for pre-capture multiplexing.
 Here, we demonstrate the reduction in inter-sample variance with pre-capture multiplexing, leading to increased power to detect exon-level copy number variation.
-Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing requires waiting to fill a pool and may delay results.
+Despite the benefits, many clinical laboratories do not employ a multiplexed capture protocol because multiplexing\added{ reduces capture efficiency \cite{trost:2018aa} and} requires waiting to fill a pool and may delay results.
 While we understand the increased complexity, multiplexed capture may uncover otherwise missed copy number variation and increase patients' diagnostic yield.
 
 Multiplexed capture is not without limitations.
@@ -303,10 +315,10 @@ Our results suggest having a sufficiently large database of samples most-often p
 However, we show laboratories can circumvent the need for large samples by multiplexing the capture step.
 Defining the capture pool as the set of controls both limits the need for regular reanalysis as the database grows and eliminates potential over-selecting of samples with the same variants.
 
-With sequence at a depth of the WGS pool, our simplistic simulation study would suggest both mcCNV and ExomeDepth have the power to detect single-exon variants with $>$85\% sensitivity while maintaining a low false-discovery rate (\Cref{fig:simRes}, supplemental materials).
+With \replaced{the read depths obtained for }{sequence at a depth of} the WGS pool, our simplistic simulation study would suggest both mcCNV and ExomeDepth have the power to detect single-exon variants with $>$85\% sensitivity while maintaining a low false-discovery rate (\Cref{fig:simRes}, supplemental materials).
 However, comparing the exome calls to the genome calls for the WGS pool revealed lackluster concordance.
 As Trost et al. point out, the genome CNV callers still struggle with variants less than 1 kb \cite{trost:2018aa}.
-We entertain the possibility of exome calls providing greater reliability than the genome calls, given multiplexed capture and adequate sequencing depth.
+\replaced{Considering the poor performance of genome-based callers on small variants and the exome collection parameters, the exome results may provide greater reliability than the genome results.}{We entertain the possibility of exome calls providing greater reliability than the genome calls, given multiplexed capture and adequate sequencing depth.}
 However, given the distribution of calls throughout the exome, we dismiss the thousands of excess deletions called for NCG\_00790 and NCG\_00851.
 The excess deletions observed likely stem from DNA degradation, but we lack additional DNA to confirm suspected input quality issues.
 Confirmation of the individual calls is beyond the scope of this work.
@@ -316,17 +328,32 @@ The variance for the negative binomial increases as the mean increases; we expec
 Similarly, the variance of the binomial proportion increases monotonically over [0, 0.5).
 More sensitive detection of duplications will likely require greater sequencing depth.
 
-The simulation study emphasizes the importance of sequencing depth (in terms of absolute molecules).
-We can collect increased basepair coverage for less money by sequencing longer reads (e.g. 2x150 versus 2x50), but doing so decreases power for depth-based CNV calling.
-Typically, exome sequencing targets 30-50x coverage to ensure most targets have sufficient coverage for accurate basepair calling.
-We demonstrate the need for much deeper sequencing if we wish to establish exon-level variants.
-Additionally, we recognize the increased capture efficiency in hard-to-capture regions using independent captures.
-We feel the variance benefit of multiplexed capture outweighs the
-
-With comparable performance, we emphasize two strengths of using the mcCNV algorithm.
+\added{With comparable performance, we emphasize two strengths of using the mcCNV algorithm.
 First, the algorithm does not require any user-defined prior information, whereas ExomeDepth requires prior information about both the prevalence and the size of copy number variants.
 Second, the analysis occurs solely at the exon level.
-While this approach does not define the variant breakpoints, the resulting model does not include bias from fragment length/GC correction.
+While the mcCNV approach does not define the variant breakpoints, the resulting model does not include bias from fragment length/GC correction.}
+
+The simulation study emphasizes the importance of sequencing depth (in terms of absolute molecules).
+We can collect increased basepair coverage for less money by sequencing longer reads (e.g. 2x150 versus 2x50), but doing so decreases power for depth-based CNV calling.
+\replaced{The sequencing depth in clinical exomes varies widely between efforts, with average depths in the Clinical Sequencing Exploratory Research (CSER) consortium ranging from 63-233x \cite{green:2016aa}; others have suggested an ideal depth of 120x for SNP/indel calling \cite{kim:2015ab}.}{Typically, exome sequencing targets 30-50x coverage to ensure most targets have sufficient coverage for accurate basepair calling.}
+We demonstrate the need for \deleted{much }deeper sequencing if we wish to establish exon-level variants.
+
+Additionally, we recognize the increased capture efficiency in hard-to-capture regions using independent captures\added{; multiplexing the capture step reduces the capture efficiency by 20-30\% \cite{trost:2018aa}}.
+We feel the variance benefit of multiplexed capture outweighs the \added{decrease in capture efficiency.
+Without an accurate estimate of the disease burden caused by exon-level CNVs, we cannot comment on the cost-benefit of multiplexed capture with adequate sequencing depth.
+Until greater information exists, we advocate for multiplexed capture and deep sequencing to identify small CNVs.}
+
+\deleted{With comparable performance, we emphasize two strengths of using the mcCNV algorithm.
+First, the algorithm does not require any user-defined prior information, whereas ExomeDepth requires prior information about both the prevalence and the size of copy number variants.
+Second, the analysis occurs solely at the exon level.
+While this approach does not define the variant breakpoints, the resulting model does not include bias from fragment length/GC correction.}
+
+\added{We believe the uncertainty about the prevalence and clinical significance of exon-level variants warrants a large undertaking.
+Even if we take the conservative approach and look only at concordant calls between genome and exome sequencing (Figure 5), we have an average of 40 variants per sample to contend with.
+Two possibilities exist: (1) the algorithms all fail over specific regions, or (2) some genes can tolerate intragenic copy-number variation better than others.
+Having eliminated calls from repetitive and low-complexity regions, we believe possibility (2) is more likely.
+To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
+Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.}
 
 %%----------------------------------------------------------------------------%%
 %% Conclusions
@@ -340,12 +367,12 @@ Taken together, we recommend the following:
 (3) collecting an average of 225 filtered read-pairs per target.
 We then provide a simple-to-use and efficient R package to estimate copy number utilizing the negative binomial distribution.
 
-We believe the uncertainty about the prevalence and clinical significance of exon-level variants warrants a large undertaking.
+\deleted{We believe the uncertainty about the prevalence and clinical significance of exon-level variants warrants a large undertaking.
 Even if we take the conservative approach and look only at concordant calls between genome and exome sequencing (Figure 5), we have an average of 40 variants per sample to contend with.
 Two possibilities exist: (1) the algorithms all fail over specific regions, or (2) some genes can tolerate intragenic copy-number variation better than others.
 Having eliminated calls from repetitive and low-complexity regions, we believe possibility (2) is more likely.
 To truly determine the prevalence (and therefore, clinical significance) of exon-level variants we need to interrogate exon-level variants on a large cohort.
-Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.
+Confirmation testing for the tens to thousands of predicted variants from the exome and genome calls would allow true determination of algorithm performance and inform the clinical utility.}
 
 %%----------------------------------------------------------------------------%%
 %% Methods
@@ -356,8 +383,11 @@ Confirmation testing for the tens to thousands of predicted variants from the ex
 \subsection{Exome sequencing}
 
 We performed sequencing on human samples of purified DNA obtained from the Wilhelmsen laboratory collection, the NCGENES cohort \cite{foreman:2013aa}, and the Coriell Institute in compliance with all guidelines and regulations under the supervision of the UNC Institutional Review Board.
-All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.
+\deleted{All research participants, or participants' guardians when applicable, received appropriate counseling and provided informed consent to participate in this research.}
 We also utilized existing read-level data from the NCGENES \cite{foreman:2013aa} project.
+\added{All human data were collected following all guidelines and regulations with the approval and under the supervision of the UNC Institutional Review Board.
+All research participants, or participants’ guardians when applicable, received appropriate counseling and provided informed consent to participate in this research. No identifying information or sequence level data are included in this manuscript or accompanying data.}
+
 We compared the performance of two capture platforms: (1) Agilent SureSelect XT2 (multiplexed capture)/Agilent SureSelect XT (independent capture); (2) Integrated DNA Technologies (IDT) xGen Lockdown Probes.
 We utilized Human All Exome v4 baits (Agilent) and Exome Research Panel v1 baits (IDT).
 All captures performed according to manufacturer protocol, with the following exceptions: (1) we multiplexed 16 samples versus the recommended 8 for the XT2 protocol for some pools; (2) for Pool2, we performed the fragmentation step 5 times to test whether a more uniform fragment length distribution would improve capture.
@@ -456,6 +486,8 @@ Initialize by setting $\hat{s}_{ij} = 1$ for all $i,j$. Then,
   \item Adjust p-values using the Benjamini–Hochberg procedure \cite{benjamini:1995aa} and filter to a final call-set such that adjusted p-values fall below some threshold, $\alpha$.
 \end{enumerate}
 
+\section*{Declarations}
+
 \begin{backmatter}
 
 \section*{Ethics approval and consent to participate}%% if any
@@ -483,7 +515,7 @@ We thank Jim Evans for taking a break from beekeeping to provide thoughtful comm
 
 % if your bibliography is in bibtex format, use those commands:
 \bibliographystyle{bmc-mathphys} % Style BST file (bmc-mathphys, vancouver, spbasic).
-\bibliography{/Users/dayne/Github/mybibs/myBib}      % Bibliography file (usually '*.bib' )
+\bibliography{filer2020A}      % Bibliography file (usually '*.bib' )
 
 \section*{Figures}
 
